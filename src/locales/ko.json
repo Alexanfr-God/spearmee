@@ -1,0 +1,159 @@
+{
+  "common": {
+    "appName": "Spearmee",
+    "tagline": "진지한 관계와 가정을 위한 파트너를 찾으세요",
+    "continue": "계속",
+    "back": "뒤로",
+    "save": "저장",
+    "cancel": "취소",
+    "skip": "건너뛰기",
+    "done": "완료",
+    "loading": "불러오는 중…",
+    "retry": "다시 시도",
+    "comingSoon": "곧 출시 — 얼리 리스트에 등록되었습니다!",
+    "yes": "예",
+    "no": "아니요",
+    "optional": "선택",
+    "premium": "프리미엄"
+  },
+  "auth": {
+    "signingIn": "Telegram으로 로그인 중…",
+    "error": "로그인할 수 없습니다. Telegram에서 앱을 다시 열어 주세요.",
+    "openInTelegram": "계속하려면 Telegram 안에서 이 앱을 열어 주세요."
+  },
+  "tabs": {
+    "discover": "탐색",
+    "matches": "매치",
+    "blog": "블로그",
+    "profile": "프로필"
+  },
+  "onboarding": {
+    "title": "프로필 만들기",
+    "photosTitle": "사진 추가",
+    "photosHint": "1–6장의 사진을 추가하세요. 첫 사진이 대표 사진입니다.",
+    "addPhoto": "사진 추가",
+    "nameTitle": "이름이 무엇인가요?",
+    "namePlaceholder": "이름",
+    "birthTitle": "생년월일",
+    "age": "나이",
+    "genderTitle": "나는",
+    "lookingForTitle": "찾는 대상",
+    "bioTitle": "소개",
+    "bioPlaceholder": "당신에게 중요한 것을 알려 주세요…",
+    "intentTitle": "당신의 의향",
+    "wantsChildren": "자녀 희망",
+    "relationshipGoal": "관계 목표",
+    "height": "키 (cm)",
+    "education": "학력",
+    "smoking": "흡연",
+    "drinking": "음주",
+    "religion": "종교",
+    "locationTitle": "어디에 사시나요?",
+    "city": "도시",
+    "country": "국가",
+    "useMyLocation": "내 위치 사용",
+    "finish": "완료하고 시작하기",
+    "step": "{{total}}단계 중 {{current}}단계"
+  },
+  "gender": {
+    "male": "남성",
+    "female": "여성",
+    "other": "기타",
+    "any": "모두"
+  },
+  "children": {
+    "yes": "예, 자녀를 원해요",
+    "open": "자녀에 열려 있어요",
+    "no": "자녀 없음",
+    "unsure": "아직 모르겠어요"
+  },
+  "goal": {
+    "serious": "진지한 관계",
+    "marriage": "결혼",
+    "coparenting": "공동 양육",
+    "casual": "가벼운 만남"
+  },
+  "habit": {
+    "never": "전혀 안 함",
+    "sometimes": "가끔",
+    "often": "자주",
+    "regularly": "정기적으로"
+  },
+  "discover": {
+    "title": "탐색",
+    "empty": "지금은 더 이상 없습니다. 곧 다시 확인하세요!",
+    "like": "좋아요",
+    "pass": "패스",
+    "superlike": "슈퍼 좋아요",
+    "kmAway": "{{km}} km 거리",
+    "match": "매치되었어요!",
+    "matchSubtitle": "당신과 {{name}}님이 서로 좋아했어요.",
+    "sendMessage": "메시지 보내기",
+    "keepSwiping": "계속 탐색",
+    "filters": "필터"
+  },
+  "filters": {
+    "title": "탐색 필터",
+    "ageRange": "나이 범위",
+    "distance": "최대 거리",
+    "heightRange": "키 범위 (cm)",
+    "wantsChildren": "자녀 희망",
+    "relationshipGoal": "관계 목표",
+    "education": "학력",
+    "smoking": "흡연",
+    "drinking": "음주",
+    "religion": "종교",
+    "apply": "필터 적용",
+    "premiumBadge": "프리미엄",
+    "any": "모두"
+  },
+  "matches": {
+    "title": "매치",
+    "empty": "아직 매치가 없습니다. 계속 탐색하세요!",
+    "newMatch": "새 매치",
+    "you": "나: "
+  },
+  "chat": {
+    "placeholder": "메시지를 입력하세요…",
+    "send": "보내기",
+    "aiBaby": "AI 아기 보기 👶 (재미용 미리보기)",
+    "empty": "인사를 건네 대화를 시작하세요."
+  },
+  "aiBaby": {
+    "title": "AI 아기 미리보기",
+    "generating": "재미있는 미리보기를 생성 중…",
+    "needPhotos": "두 사람 모두 사진이 최소 1장 필요합니다.",
+    "disclaimer": "이것은 AI가 생성한 재미용 미리보기이며, 실제 또는 과학적인 자녀 예측이 아닙니다.",
+    "generate": "미리보기 생성",
+    "again": "다시 생성"
+  },
+  "blog": {
+    "title": "블로그",
+    "empty": "아직 글이 없습니다. 곧 다시 확인하세요!"
+  },
+  "profile": {
+    "title": "프로필",
+    "editProfile": "프로필 수정",
+    "managePhotos": "사진 관리",
+    "language": "언어",
+    "logout": "로그아웃",
+    "premium": "프리미엄 가입",
+    "yourIntent": "당신의 의향"
+  },
+  "premium": {
+    "title": "Spearmee 프리미엄",
+    "subtitle": "더 의미 있는 만남을 열어 보세요.",
+    "unlimitedLikes": "무제한 좋아요",
+    "unlimitedLikesDesc": "원하는 만큼 좋아요를 보내세요.",
+    "seeLikes": "나를 좋아한 사람 보기",
+    "seeLikesDesc": "추측 없이 더 빠르게 매치하세요.",
+    "advancedFilters": "고급 필터",
+    "advancedFiltersDesc": "중요한 모든 조건으로 필터링하세요.",
+    "aiBabyHd": "AI 아기 HD",
+    "aiBabyHdDesc": "더 높은 품질의 미리보기.",
+    "boost": "부스트",
+    "boostDesc": "30분 동안 더 많은 사람에게 노출됩니다.",
+    "cta": "얼리 리스트 참여",
+    "perk": "이 혜택 받기"
+  }
+}
