@@ -3,8 +3,10 @@
     "appName": "Spearmee",
     "tagline": "Найдите партнёра для серьёзных отношений и семьи",
     "continue": "Продолжить",
+    "next": "Далее",
     "back": "Назад",
     "save": "Сохранить",
+    "saved": "Сохранено",
     "cancel": "Отмена",
     "skip": "Пропустить",
     "done": "Готово",
@@ -13,13 +15,20 @@
     "comingSoon": "Скоро — вы в списке первых!",
     "yes": "Да",
     "no": "Нет",
+    "maybe": "Возможно",
+    "open": "Открыт(а)",
     "optional": "необязательно",
-    "premium": "Премиум"
+    "premium": "Премиум",
+    "edit": "Изменить",
+    "close": "Закрыть",
+    "years": "{{count}} лет",
+    "cm": "{{value}} см",
+    "kg": "{{value}} кг"
   },
   "auth": {
     "signingIn": "Входим через Telegram…",
-    "error": "Не удалось войти. Откройте приложение из Telegram заново.",
-    "openInTelegram": "Откройте это приложение в Telegram, чтобы продолжить."
+    "error": "Не удалось войти. Откройте приложение из Telegram.",
+    "openInTelegram": "Откройте приложение в Telegram, чтобы продолжить."
   },
   "tabs": {
     "discover": "Поиск",
@@ -28,102 +37,128 @@
     "profile": "Профиль"
   },
   "onboarding": {
-    "title": "Создайте профиль",
-    "photosTitle": "Добавьте фото",
-    "photosHint": "Добавьте 1–6 фото. Первое фото — главное.",
-    "addPhoto": "Добавить фото",
-    "nameTitle": "Как вас зовут?",
-    "namePlaceholder": "Ваше имя",
-    "birthTitle": "Дата рождения",
-    "age": "Возраст",
-    "genderTitle": "Я",
-    "lookingForTitle": "Ищу",
-    "bioTitle": "О себе",
-    "bioPlaceholder": "Расскажите, что для вас важно…",
-    "intentTitle": "Ваши намерения",
-    "wantsChildren": "Хочу детей",
-    "relationshipGoal": "Цель отношений",
-    "height": "Рост (см)",
-    "education": "Образование",
-    "smoking": "Курение",
-    "drinking": "Алкоголь",
-    "religion": "Религия",
-    "locationTitle": "Где вы живёте?",
-    "city": "Город",
-    "country": "Страна",
-    "useMyLocation": "Моё местоположение",
+    "step": "Шаг {{current}} из {{total}}",
+    "next": "Далее",
     "finish": "Завершить и начать",
-    "step": "Шаг {{current}} из {{total}}"
+    "resume": "С возвращением — давайте завершим профиль",
+    "photos": {
+      "title": "Добавьте фото",
+      "hint": "Добавьте 1–6 фото. Первое фото — главное.",
+      "faceTip": "Чёткое фото анфас даст лучший AI-превью малыша позже 👶",
+      "add": "Добавить фото",
+      "primary": "Главное",
+      "needOne": "Добавьте хотя бы одно фото"
+    },
+    "basics": {
+      "title": "Основное",
+      "name": "Имя",
+      "namePlaceholder": "Ваше имя",
+      "birth": "Дата рождения",
+      "age": "Возраст",
+      "gender": "Я",
+      "height": "Рост (см)",
+      "weight": "Вес (кг)"
+    },
+    "appearance": {
+      "title": "Внешность",
+      "note": "Используется для весёлого описания и мягких фильтров — никогда не используется как генетические данные для AI-превью малыша.",
+      "eyeColor": "Цвет глаз",
+      "hairColor": "Цвет волос",
+      "hairType": "Тип волос",
+      "bodyType": "Телосложение",
+      "ethnicity": "Происхождение"
+    },
+    "intent": {
+      "title": "Ваши намерения",
+      "wantsChildren": "Хотите детей?",
+      "childrenTimeline": "Когда?",
+      "hasChildren": "У вас есть дети?",
+      "relationshipGoal": "Что вы ищете?"
+    },
+    "lifestyle": {
+      "title": "Образ жизни и ценности",
+      "smoking": "Курение",
+      "drinking": "Алкоголь",
+      "religion": "Религия",
+      "diet": "Питание",
+      "exercise": "Спорт",
+      "wantsMarriage": "Хотите брак?",
+      "willingToRelocate": "Готовы переехать?"
+    },
+    "location": {
+      "title": "Локация и язык",
+      "city": "Город",
+      "country": "Страна",
+      "useLocation": "Использовать мою геолокацию",
+      "nativeLanguages": "Родной язык(и)",
+      "uiLanguage": "Язык приложения"
+    },
+    "bio": {
+      "title": "Немного о вас",
+      "bio": "Коротко о себе",
+      "bioPlaceholder": "Расскажите, что для вас важно…",
+      "prompt": "Идеальные семейные выходные для меня — это…",
+      "promptPlaceholder": "Закончите фразу…"
+    }
   },
-  "gender": {
-    "male": "Мужчина",
-    "female": "Женщина",
-    "other": "Другое",
-    "any": "Любой"
-  },
-  "children": {
-    "yes": "Да, хочу детей",
-    "open": "Открыт(а) к детям",
-    "no": "Без детей",
-    "unsure": "Пока не уверен(а)"
-  },
-  "goal": {
-    "serious": "Серьёзные отношения",
-    "marriage": "Брак",
-    "coparenting": "Совместное родительство",
-    "casual": "Без обязательств"
-  },
-  "habit": {
-    "never": "Никогда",
-    "sometimes": "Иногда",
-    "often": "Часто",
-    "regularly": "Регулярно"
-  },
-  "discover": {
-    "title": "Поиск",
-    "empty": "Пока никого нет. Загляните позже!",
-    "like": "Нравится",
+  "resonance": {
+    "title": "Резонанс",
+    "subtitle": "Сначала совместимость, потом фото.",
+    "todayPicks": "Ваши пары на сегодня",
+    "progress": "{{current}}/{{total}}",
+    "match": "%",
+    "scoreLabel": "Резонанс",
+    "revealPhoto": "Показать фото",
+    "hidePhoto": "Скрыть фото",
+    "resonate": "Резонанс",
     "pass": "Пропустить",
-    "superlike": "Супер-лайк",
-    "kmAway": "{{km}} км от вас",
-    "match": "Это пара!",
-    "matchSubtitle": "Вы и {{name}} понравились друг другу.",
-    "sendMessage": "Написать сообщение",
-    "keepSwiping": "Продолжить",
-    "filters": "Фильтры"
-  },
-  "filters": {
-    "title": "Фильтры поиска",
-    "ageRange": "Возраст",
-    "distance": "Максимальное расстояние",
-    "heightRange": "Рост (см)",
-    "wantsChildren": "Хочет детей",
-    "relationshipGoal": "Цель отношений",
-    "education": "Образование",
-    "smoking": "Курение",
-    "drinking": "Алкоголь",
-    "religion": "Религия",
-    "apply": "Применить фильтры",
-    "premiumBadge": "Премиум",
-    "any": "Любой"
+    "spark": "Искра",
+    "sparkSent": "Искра отправлена ✨",
+    "empty": "Вы посмотрели сегодняшние пары. Новые — завтра ✨",
+    "getMore": "Больше сейчас",
+    "getMoreLogged": "Сообщим, когда откроются новые пары ✨",
+    "buildingSet": "Ищем тех, кто резонирует с вами…",
+    "noCandidates": "Пока никого нового — загляните позже!",
+    "matchTitle": "Это пара!",
+    "matchBody": "Вы и {{name}} резонируете друг с другом.",
+    "sayHello": "Поздороваться",
+    "keepGoing": "Продолжить",
+    "signals": {
+      "bothWantChildren": "Оба хотят детей",
+      "sameTimeline": "Похожие сроки по детям",
+      "sameGoal": "Одна цель отношений",
+      "sameCity": "Один город",
+      "kmAway": "{{km}} км от вас",
+      "bothNonSmokers": "Оба не курят",
+      "sharedFaith": "Общая вера",
+      "bothWantMarriage": "Оба хотят брак"
+    }
   },
   "matches": {
     "title": "Пары",
     "empty": "Пока нет пар. Продолжайте поиск!",
     "newMatch": "Новая пара",
-    "you": "Вы: "
+    "you": "Вы: ",
+    "noMessages": "Поздоровайтесь 👋"
   },
   "chat": {
-    "placeholder": "Введите сообщение…",
+    "placeholder": "Напишите сообщение…",
     "send": "Отправить",
-    "aiBaby": "Посмотреть AI-малыша 👶 (для развлечения)",
-    "empty": "Поздоровайтесь, чтобы начать общение."
+    "empty": "Поздоровайтесь, чтобы начать разговор.",
+    "showOriginal": "Показать оригинал",
+    "showTranslation": "Показать перевод",
+    "translatedFrom": "Перевод с {{flag}}",
+    "translating": "перевод…",
+    "autoTranslate": "Авто-перевод",
+    "copyTranslation": "Копировать перевод",
+    "copied": "Скопировано",
+    "aiBaby": "AI-превью малыша 👶"
   },
   "aiBaby": {
-    "title": "AI-превью вашего малыша",
+    "title": "AI-превью малыша",
     "generating": "Создаём весёлое превью…",
     "needPhotos": "У обоих должно быть хотя бы одно фото.",
-    "disclaimer": "Это сгенерированное ИИ развлекательное превью, а не реальное или научное предсказание о каком-либо ребёнке.",
+    "disclaimer": "Это весёлое превью, созданное ИИ, а не реальный или научный прогноз настоящего ребёнка. Используются только фото лиц — указанные детали внешности никогда не используются как генетические данные.",
     "generate": "Создать превью",
     "again": "Создать ещё раз"
   },
@@ -134,26 +169,62 @@
   "profile": {
     "title": "Профиль",
     "editProfile": "Редактировать профиль",
+    "preferences": "Кого я ищу",
     "managePhotos": "Управление фото",
     "language": "Язык",
     "logout": "Выйти",
     "premium": "Получить Премиум",
-    "yourIntent": "Ваши намерения"
+    "yourIntent": "Ваши намерения",
+    "complete": "Профиль заполнен на {{percent}}%"
+  },
+  "preferences": {
+    "title": "Кого я ищу",
+    "subtitle": "Это влияет на ваш Резонанс. Стоп-факторы полностью исключают людей.",
+    "ageRange": "Возраст",
+    "distance": "Макс. расстояние",
+    "distanceValue": "{{km}} км",
+    "heightRange": "Рост (см)",
+    "wantsChildren": "Хочет детей",
+    "childrenTimeline": "Сроки по детям",
+    "relationshipGoal": "Цель отношений",
+    "smoking": "Курение",
+    "drinking": "Алкоголь",
+    "religion": "Религия",
+    "education": "Образование",
+    "eyeColor": "Цвет глаз",
+    "hairColor": "Цвет волос",
+    "ethnicity": "Происхождение",
+    "willingToRelocate": "Готов(а) переехать",
+    "dealbreaker": "Стоп-фактор",
+    "dealbreakerHint": "Жёсткий фильтр — исключает несовпадающих",
+    "softHint": "Мягкое предпочтение — влияет только на оценку",
+    "saved": "Предпочтения сохранены"
   },
   "premium": {
     "title": "Spearmee Премиум",
-    "subtitle": "Откройте больше значимых знакомств.",
-    "unlimitedLikes": "Безлимитные лайки",
-    "unlimitedLikesDesc": "Ставьте сколько угодно лайков.",
-    "seeLikes": "Кто вас лайкнул",
-    "seeLikesDesc": "Без догадок — быстрее находите пару.",
-    "advancedFilters": "Расширенные фильтры",
-    "advancedFiltersDesc": "Фильтруйте по всему, что важно.",
-    "aiBabyHd": "AI-малыш в HD",
-    "aiBabyHdDesc": "Превью в более высоком качестве.",
-    "boost": "Буст",
-    "boostDesc": "Больше показов на 30 минут.",
+    "subtitle": "Откройте больше значимых связей.",
     "cta": "В список первых",
-    "perk": "Получить опцию"
+    "note": "Оплата пока не активна — вы в списке первых."
+  },
+  "options": {
+    "gender": { "male": "Мужчина", "female": "Женщина", "other": "Другое" },
+    "eye_color": { "brown": "Карие", "blue": "Голубые", "green": "Зелёные", "hazel": "Ореховые", "gray": "Серые", "dark": "Тёмные" },
+    "hair_color": { "black": "Чёрные", "brown": "Каштановые", "blonde": "Светлые", "red": "Рыжие", "gray": "Седые", "other": "Другое" },
+    "hair_type": { "straight": "Прямые", "wavy": "Волнистые", "curly": "Кудрявые", "coily": "Очень кудрявые" },
+    "body_type": { "slim": "Стройное", "athletic": "Атлетичное", "average": "Среднее", "curvy": "С формами", "plus": "Plus" },
+    "ethnicity": { "east_asian": "Восточная Азия", "south_asian": "Южная Азия", "southeast_asian": "Юго-Восточная Азия", "white": "Европеоид", "black": "Африканец", "hispanic": "Латино", "middle_eastern": "Ближний Восток", "mixed": "Смешанное", "other": "Другое" },
+    "wants_children": { "yes": "Да", "open": "Открыт(а)", "unsure": "Не уверен(а)", "no": "Нет" },
+    "children_timeline": { "within_1y": "В течение года", "1_3y": "1–3 года", "someday": "Когда-нибудь", "undecided": "Не решил(а)" },
+    "has_children": { "none": "Нет детей", "has": "Есть дети" },
+    "relationship_goal": { "marriage": "Брак", "serious": "Серьёзные отношения", "coparenting": "Совм. родительство", "open": "Открыт(а)" },
+    "smoking": { "never": "Никогда", "sometimes": "Иногда", "regularly": "Регулярно" },
+    "drinking": { "never": "Никогда", "sometimes": "Иногда", "often": "Часто" },
+    "religion": { "none": "Нет", "christian": "Христианство", "muslim": "Ислам", "jewish": "Иудаизм", "hindu": "Индуизм", "buddhist": "Буддизм", "spiritual": "Духовность", "other": "Другое" },
+    "diet": { "omnivore": "Всеядное", "vegetarian": "Вегетарианство", "vegan": "Веганство", "halal": "Халяль", "kosher": "Кошер", "other": "Другое" },
+    "exercise": { "never": "Никогда", "sometimes": "Иногда", "often": "Часто", "daily": "Ежедневно" },
+    "wants_marriage": { "yes": "Да", "open": "Открыт(а)", "no": "Нет" },
+    "willing_to_relocate": { "yes": "Да", "maybe": "Возможно", "no": "Нет" },
+    "education": { "high_school": "Школа", "college": "Колледж", "bachelor": "Бакалавр", "master": "Магистр", "phd": "Доктор наук", "other": "Другое" },
+    "dealbreakers": { "smoking": "Без курящих", "no_children": "Должен хотеть детей", "wants_children": "Отношение к детям", "relationship_goal": "Цель отношений", "religion": "Религия" }
   }
 }
