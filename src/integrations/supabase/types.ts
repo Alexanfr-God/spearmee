@@ -80,6 +80,44 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_sets: {
+        Row: {
+          candidate_ids: string[]
+          created_at: string
+          id: string
+          profile_id: string
+          seen_ids: string[]
+          set_date: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_ids?: string[]
+          created_at?: string
+          id?: string
+          profile_id: string
+          seen_ids?: string[]
+          set_date?: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_ids?: string[]
+          created_at?: string
+          id?: string
+          profile_id?: string
+          seen_ids?: string[]
+          set_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sets_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       matches: {
         Row: {
           created_at: string | null
@@ -116,12 +154,45 @@ export type Database = {
           },
         ]
       }
+      message_translations: {
+        Row: {
+          created_at: string
+          id: string
+          lang: string
+          message_id: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lang: string
+          message_id: string
+          text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lang?: string
+          message_id?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_translations_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           body: string
           created_at: string | null
           id: string
           match_id: string
+          original_lang: string | null
           read_at: string | null
           sender_id: string
         }
@@ -130,6 +201,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           match_id: string
+          original_lang?: string | null
           read_at?: string | null
           sender_id: string
         }
@@ -138,6 +210,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           match_id?: string
+          original_lang?: string | null
           read_at?: string | null
           sender_id?: string
         }
@@ -190,6 +263,86 @@ export type Database = {
           },
         ]
       }
+      preferences: {
+        Row: {
+          age_max: number | null
+          age_min: number | null
+          children_timeline: string[] | null
+          created_at: string
+          dealbreakers: string[] | null
+          distance_km: number | null
+          drinking: string[] | null
+          education: string[] | null
+          ethnicity: string[] | null
+          eye_color: string[] | null
+          hair_color: string[] | null
+          height_max: number | null
+          height_min: number | null
+          id: string
+          profile_id: string
+          relationship_goal: string[] | null
+          religion: string[] | null
+          smoking: string[] | null
+          updated_at: string
+          wants_children: string[] | null
+          willing_to_relocate: string | null
+        }
+        Insert: {
+          age_max?: number | null
+          age_min?: number | null
+          children_timeline?: string[] | null
+          created_at?: string
+          dealbreakers?: string[] | null
+          distance_km?: number | null
+          drinking?: string[] | null
+          education?: string[] | null
+          ethnicity?: string[] | null
+          eye_color?: string[] | null
+          hair_color?: string[] | null
+          height_max?: number | null
+          height_min?: number | null
+          id?: string
+          profile_id: string
+          relationship_goal?: string[] | null
+          religion?: string[] | null
+          smoking?: string[] | null
+          updated_at?: string
+          wants_children?: string[] | null
+          willing_to_relocate?: string | null
+        }
+        Update: {
+          age_max?: number | null
+          age_min?: number | null
+          children_timeline?: string[] | null
+          created_at?: string
+          dealbreakers?: string[] | null
+          distance_km?: number | null
+          drinking?: string[] | null
+          education?: string[] | null
+          ethnicity?: string[] | null
+          eye_color?: string[] | null
+          hair_color?: string[] | null
+          height_max?: number | null
+          height_min?: number | null
+          id?: string
+          profile_id?: string
+          relationship_goal?: string[] | null
+          religion?: string[] | null
+          smoking?: string[] | null
+          updated_at?: string
+          wants_children?: string[] | null
+          willing_to_relocate?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preferences_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       premium_intent_events: {
         Row: {
           context: Json | null
@@ -226,13 +379,22 @@ export type Database = {
         Row: {
           bio: string | null
           birth_date: string | null
+          body_type: string | null
+          children_timeline: string | null
           city: string | null
           country: string | null
           created_at: string | null
+          diet: string | null
           display_name: string | null
           drinking: string | null
           education: string | null
+          ethnicity: string | null
+          exercise: string | null
+          eye_color: string | null
           gender: string | null
+          hair_color: string | null
+          hair_type: string | null
+          has_children: string | null
           height_cm: number | null
           id: string
           is_premium: boolean | null
@@ -241,24 +403,38 @@ export type Database = {
           lat: number | null
           lng: number | null
           looking_for: string | null
+          native_languages: string[] | null
           onboarded: boolean | null
+          prompt_answer: string | null
           relationship_goal: string | null
           religion: string | null
           smoking: string | null
           telegram_id: number
           username: string | null
           wants_children: string | null
+          wants_marriage: string | null
+          weight_kg: number | null
+          willing_to_relocate: string | null
         }
         Insert: {
           bio?: string | null
           birth_date?: string | null
+          body_type?: string | null
+          children_timeline?: string | null
           city?: string | null
           country?: string | null
           created_at?: string | null
+          diet?: string | null
           display_name?: string | null
           drinking?: string | null
           education?: string | null
+          ethnicity?: string | null
+          exercise?: string | null
+          eye_color?: string | null
           gender?: string | null
+          hair_color?: string | null
+          hair_type?: string | null
+          has_children?: string | null
           height_cm?: number | null
           id: string
           is_premium?: boolean | null
@@ -267,24 +443,38 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           looking_for?: string | null
+          native_languages?: string[] | null
           onboarded?: boolean | null
+          prompt_answer?: string | null
           relationship_goal?: string | null
           religion?: string | null
           smoking?: string | null
           telegram_id: number
           username?: string | null
           wants_children?: string | null
+          wants_marriage?: string | null
+          weight_kg?: number | null
+          willing_to_relocate?: string | null
         }
         Update: {
           bio?: string | null
           birth_date?: string | null
+          body_type?: string | null
+          children_timeline?: string | null
           city?: string | null
           country?: string | null
           created_at?: string | null
+          diet?: string | null
           display_name?: string | null
           drinking?: string | null
           education?: string | null
+          ethnicity?: string | null
+          exercise?: string | null
+          eye_color?: string | null
           gender?: string | null
+          hair_color?: string | null
+          hair_type?: string | null
+          has_children?: string | null
           height_cm?: number | null
           id?: string
           is_premium?: boolean | null
@@ -293,13 +483,18 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           looking_for?: string | null
+          native_languages?: string[] | null
           onboarded?: boolean | null
+          prompt_answer?: string | null
           relationship_goal?: string | null
           religion?: string | null
           smoking?: string | null
           telegram_id?: number
           username?: string | null
           wants_children?: string | null
+          wants_marriage?: string | null
+          weight_kg?: number | null
+          willing_to_relocate?: string | null
         }
         Relationships: []
       }
