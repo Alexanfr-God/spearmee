@@ -1,0 +1,159 @@
+{
+  "common": {
+    "appName": "Spearmee",
+    "tagline": "Find a partner for a serious relationship & family",
+    "continue": "Continue",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "skip": "Skip",
+    "done": "Done",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "comingSoon": "Coming soon — you're on the early list!",
+    "yes": "Yes",
+    "no": "No",
+    "optional": "optional",
+    "premium": "Premium"
+  },
+  "auth": {
+    "signingIn": "Signing you in via Telegram…",
+    "error": "We couldn't sign you in. Please reopen the app from Telegram.",
+    "openInTelegram": "Open this app inside Telegram to continue."
+  },
+  "tabs": {
+    "discover": "Discover",
+    "matches": "Matches",
+    "blog": "Blog",
+    "profile": "Profile"
+  },
+  "onboarding": {
+    "title": "Create your profile",
+    "photosTitle": "Add your photos",
+    "photosHint": "Add 1–6 photos. Your first photo is your main one.",
+    "addPhoto": "Add photo",
+    "nameTitle": "What's your name?",
+    "namePlaceholder": "Your name",
+    "birthTitle": "Your birth date",
+    "age": "Age",
+    "genderTitle": "I am",
+    "lookingForTitle": "Looking for",
+    "bioTitle": "About you",
+    "bioPlaceholder": "Tell people what matters to you…",
+    "intentTitle": "Your intentions",
+    "wantsChildren": "Want children",
+    "relationshipGoal": "Relationship goal",
+    "height": "Height (cm)",
+    "education": "Education",
+    "smoking": "Smoking",
+    "drinking": "Drinking",
+    "religion": "Religion",
+    "locationTitle": "Where do you live?",
+    "city": "City",
+    "country": "Country",
+    "useMyLocation": "Use my location",
+    "finish": "Finish & start matching",
+    "step": "Step {{current}} of {{total}}"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "any": "Anyone"
+  },
+  "children": {
+    "yes": "Yes, I want children",
+    "open": "Open to children",
+    "no": "No children",
+    "unsure": "Not sure yet"
+  },
+  "goal": {
+    "serious": "Serious relationship",
+    "marriage": "Marriage",
+    "coparenting": "Co-parenting",
+    "casual": "Casual"
+  },
+  "habit": {
+    "never": "Never",
+    "sometimes": "Sometimes",
+    "often": "Often",
+    "regularly": "Regularly"
+  },
+  "discover": {
+    "title": "Discover",
+    "empty": "No more people for now. Check back soon!",
+    "like": "Like",
+    "pass": "Pass",
+    "superlike": "Super Like",
+    "kmAway": "{{km}} km away",
+    "match": "It's a match!",
+    "matchSubtitle": "You and {{name}} liked each other.",
+    "sendMessage": "Send a message",
+    "keepSwiping": "Keep swiping",
+    "filters": "Filters"
+  },
+  "filters": {
+    "title": "Discovery filters",
+    "ageRange": "Age range",
+    "distance": "Maximum distance",
+    "heightRange": "Height range (cm)",
+    "wantsChildren": "Wants children",
+    "relationshipGoal": "Relationship goal",
+    "education": "Education",
+    "smoking": "Smoking",
+    "drinking": "Drinking",
+    "religion": "Religion",
+    "apply": "Apply filters",
+    "premiumBadge": "Premium",
+    "any": "Any"
+  },
+  "matches": {
+    "title": "Matches",
+    "empty": "No matches yet. Keep discovering!",
+    "newMatch": "New match",
+    "you": "You: "
+  },
+  "chat": {
+    "placeholder": "Type a message…",
+    "send": "Send",
+    "aiBaby": "See your AI baby 👶 (fun preview)",
+    "empty": "Say hello to start the conversation."
+  },
+  "aiBaby": {
+    "title": "Your AI baby preview",
+    "generating": "Generating your fun preview…",
+    "needPhotos": "Both of you need at least one photo to use this.",
+    "disclaimer": "This is an AI-generated fun preview and not a real or scientific prediction of any actual child.",
+    "generate": "Generate preview",
+    "again": "Generate again"
+  },
+  "blog": {
+    "title": "Blog",
+    "empty": "No articles yet. Check back soon!"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit profile",
+    "managePhotos": "Manage photos",
+    "language": "Language",
+    "logout": "Log out",
+    "premium": "Get Premium",
+    "yourIntent": "Your intentions"
+  },
+  "premium": {
+    "title": "Spearmee Premium",
+    "subtitle": "Unlock more meaningful connections.",
+    "unlimitedLikes": "Unlimited likes",
+    "unlimitedLikesDesc": "Like as many people as you want.",
+    "seeLikes": "See who liked you",
+    "seeLikesDesc": "Skip the guessing and match faster.",
+    "advancedFilters": "Advanced filters",
+    "advancedFiltersDesc": "Filter by everything that matters to you.",
+    "aiBabyHd": "AI baby in HD",
+    "aiBabyHdDesc": "Higher-quality fun previews.",
+    "boost": "Boost",
+    "boostDesc": "Be seen by more people for 30 minutes.",
+    "cta": "Join the early list",
+    "perk": "Get this perk"
+  }
+}
