@@ -71,6 +71,6 @@ export async function logPremiumIntent(
   await supabase.from("premium_intent_events").insert({
     profile_id: profileId,
     event_type: eventType,
-    context: context ?? null,
+    context: (context ?? null) as never,
   });
 }
