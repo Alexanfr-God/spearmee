@@ -1,7 +1,7 @@
 // Compatibility ("Resonance") scoring — pure functions, usable on client & server.
 // Computes a 0–100 score between a viewer and a candidate using the candidate's
 // profile and the viewer's preferences, plus the matched signals to show as chips.
-import { ageFromBirthDate, distanceKm } from "@/lib/helpers";
+import { ageFromBirthDate, distanceKm } from "@/lib/calc";
 
 export interface ScoreProfile {
   id: string;
