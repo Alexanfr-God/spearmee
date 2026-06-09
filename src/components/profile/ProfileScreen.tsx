@@ -119,7 +119,7 @@ export function ProfileScreen() {
       <button
         type="button"
         onClick={() => {
-          haptic("impact");
+          haptic("medium");
           logPremiumIntent(profile.id, "premium_cta", { from: "profile" });
         }}
         className="rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground active:opacity-90"

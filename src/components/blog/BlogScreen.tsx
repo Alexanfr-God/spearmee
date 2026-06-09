@@ -7,8 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 interface Article {
   id: string;
   title: string | null;
-  body: string | null;
-  cover_url: string | null;
+  body_markdown: string | null;
+  cover_image: string | null;
 }
 
 export function BlogScreen() {
@@ -21,8 +21,8 @@ export function BlogScreen() {
     (async () => {
       const { data } = await supabase
         .from("articles")
-        .select("id, title, body, cover_url")
-        .order("created_at", { ascending: false });
+        .select("id, title, body_markdown, cover_image")
+        .order("published_at", { ascending: false });
       setArticles((data ?? []) as Article[]);
       setLoading(false);
     })();
@@ -34,11 +34,11 @@ export function BlogScreen() {
         <button onClick={() => setOpen(null)} className="mb-3 flex items-center gap-1 text-sm text-primary">
           <ChevronLeft className="h-4 w-4" /> {t("tabs.blog")}
         </button>
-        {open.cover_url && (
-          <img src={open.cover_url} alt="" className="mb-3 aspect-video w-full rounded-2xl object-cover" />
+        {open.cover_image && (
+          <img src={open.cover_image} alt="" className="mb-3 aspect-video w-full rounded-2xl object-cover" />
         )}
         <h1 className="text-xl font-bold text-foreground">{open.title}</h1>
-        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{open.body}</p>
+        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{open.body_markdown}</p>
       </div>
     );
   }
@@ -60,10 +60,10 @@ export function BlogScreen() {
                 onClick={() => setOpen(a)}
                 className="w-full overflow-hidden rounded-2xl border border-border bg-card text-left active:bg-accent"
               >
-                {a.cover_url && <img src={a.cover_url} alt="" className="aspect-video w-full object-cover" />}
+                {a.cover_image && <img src={a.cover_image} alt="" className="aspect-video w-full object-cover" />}
                 <div className="p-3">
                   <p className="font-semibold text-foreground">{a.title}</p>
-                  {a.body && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{a.body}</p>}
+                  {a.body_markdown && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{a.body_markdown}</p>}
                 </div>
               </button>
             </li>
