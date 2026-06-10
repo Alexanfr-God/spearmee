@@ -5,10 +5,12 @@ import { ChevronLeft, Send, Languages, Baby, Lightbulb, Loader2, X } from "lucid
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { usePoints } from "@/hooks/usePoints";
 import { translateMessage } from "@/lib/translate.functions";
 import { generateIcebreakers } from "@/lib/icebreaker.functions";
 import { haptic } from "@/lib/telegram";
 import { Input } from "@/components/ui/input";
+import { VerifiedBadge } from "@/components/points/VerifiedBadge";
 import { AiBabyDialog } from "@/components/matches/AiBabyDialog";
 
 interface Msg {
@@ -21,11 +23,13 @@ interface Msg {
 export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () => void }) {
   const { t, i18n } = useTranslation();
   const { profile } = useAuth();
+  const { award } = usePoints();
   const callTranslate = useServerFn(translateMessage);
   const callIcebreakers = useServerFn(generateIcebreakers);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [otherName, setOtherName] = useState<string | null>(null);
+  const [otherVerified, setOtherVerified] = useState(false);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [showBaby, setShowBaby] = useState(false);
   const [icebreakers, setIcebreakers] = useState<string[]>([]);
@@ -43,10 +47,11 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
         const otherId = match.user_a === profile.id ? match.user_b : match.user_a;
         const { data: p } = await supabase
           .from("profiles")
-          .select("display_name")
+          .select("display_name, verified")
           .eq("id", otherId)
           .maybeSingle();
         setOtherName(p?.display_name ?? null);
+        setOtherVerified(p?.verified ?? false);
       }
       const { data } = await supabase
         .from("messages")
@@ -79,6 +84,7 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
     setText("");
     haptic("light");
     await supabase.from("messages").insert({ match_id: matchId, sender_id: profile.id, body });
+    void award("send_message");
   };
 
   const translate = async (m: Msg) => {
@@ -116,7 +122,10 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
         <button onClick={onBack} className="rounded-full p-1 text-foreground">
           <ChevronLeft className="h-6 w-6" />
         </button>
-        <span className="flex-1 truncate font-semibold text-foreground">{otherName}</span>
+        <span className="flex flex-1 items-center gap-1 truncate font-semibold text-foreground">
+          <span className="truncate">{otherName}</span>
+          {otherVerified && <VerifiedBadge size={16} className="shrink-0" />}
+        </span>
         <button
           onClick={() => setShowBaby(true)}
           className="flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground"
@@ -187,6 +196,7 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
                   haptic("selection");
                   setText(s);
                   setIcebreakers([]);
+                  void award("icebreaker_used");
                 }}
                 className="rounded-2xl bg-accent px-3 py-2 text-left text-sm text-accent-foreground active:scale-[0.99]"
               >

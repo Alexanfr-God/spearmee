@@ -216,6 +216,32 @@
     "cta": "Join the early list",
     "note": "Payments aren't live yet — you're on the early list."
   },
+  "points": {
+    "total": "{{points}} Resonance Points",
+    "streak": "{{count}}-day streak",
+    "earnedToast": "+{{points}} Resonance Points ✦",
+    "streakToast": "{{count}}-day streak! 🔥 Keep it going",
+    "levels": {
+      "0": "Newcomer",
+      "1": "Sprout 🌱",
+      "2": "Bloom 🌿",
+      "3": "Flourish 🌸",
+      "4": "Radiant ✨"
+    }
+  },
+  "verify": {
+    "cardTitle": "Get verified",
+    "cardSub": "Add a trust badge & earn 100 points",
+    "title": "Verify it's you",
+    "body": "Take a quick selfie so others know you're real. We only use it to verify your profile.",
+    "tip1": "Good lighting, face clearly visible",
+    "tip2": "No hats or sunglasses",
+    "takeSelfie": "Take a selfie",
+    "checking": "Checking…",
+    "reward": "Verified profiles get a badge, a boost & +100 points",
+    "success": "You're verified ✓",
+    "failed": "Couldn't verify — please try again"
+  },
   "options": {
     "gender": { "male": "Male", "female": "Female", "other": "Other" },
     "eye_color": { "brown": "Brown", "blue": "Blue", "green": "Green", "hazel": "Hazel", "gray": "Gray", "dark": "Dark" },

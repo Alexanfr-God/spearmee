@@ -12,7 +12,7 @@ import {
 } from "@/lib/resonance";
 
 const SCORE_FIELDS =
-  "id, display_name, birth_date, gender, height_cm, city, country, lat, lng, wants_children, children_timeline, relationship_goal, smoking, drinking, religion, diet, eye_color, hair_color, ethnicity, wants_marriage, willing_to_relocate";
+  "id, display_name, birth_date, gender, height_cm, city, country, lat, lng, wants_children, children_timeline, relationship_goal, smoking, drinking, religion, diet, eye_color, hair_color, ethnicity, wants_marriage, willing_to_relocate, verified";
 
 const DAILY_LIMIT = 7;
 
@@ -25,6 +25,7 @@ export interface DailyCandidate {
   signals: Signal[];
   breakdown: AxisScore[];
   photo_path: string | null;
+  verified: boolean;
 }
 
 export interface DailySetResult {
@@ -85,7 +86,12 @@ export const getDailySet = createServerFn({ method: "GET" })
         .filter((p) => !swiped.has(p.id))
         .filter((p) => !isDealbroken(prefs, p as ScoreProfile))
         .map((p) => ({ p, r: computeResonance(viewer as ScoreProfile, prefs, p as ScoreProfile) }))
-        .sort((a, b) => b.r.score - a.r.score)
+        .sort(
+          (a, b) =>
+            b.r.score +
+            ((b.p as { verified?: boolean }).verified ? 2 : 0) -
+            (a.r.score + ((a.p as { verified?: boolean }).verified ? 2 : 0)),
+        )
         .slice(0, DAILY_LIMIT);
 
       const candidate_ids = scored.map((s) => s.p.id);
@@ -130,6 +136,7 @@ export const getDailySet = createServerFn({ method: "GET" })
         signals: r.signals,
         breakdown: r.breakdown,
         photo_path: photo,
+        verified: (p as { verified?: boolean }).verified ?? false,
       });
     }
 

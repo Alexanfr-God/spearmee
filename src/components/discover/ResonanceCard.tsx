@@ -4,6 +4,7 @@ import { Eye, EyeOff, ChevronDown } from "lucide-react";
 
 import type { DailyCandidate } from "@/lib/daily.functions";
 import { haptic } from "@/lib/telegram";
+import { VerifiedBadge } from "@/components/points/VerifiedBadge";
 
 export function ResonanceCard({
   candidate,
@@ -57,6 +58,9 @@ export function ResonanceCard({
           <h2 className="text-xl font-bold text-white">
             {candidate.display_name}
             {candidate.age != null && <span className="font-normal">, {candidate.age}</span>}
+            {candidate.verified && (
+              <VerifiedBadge size={18} className="ml-1 inline align-text-bottom text-white" />
+            )}
           </h2>
           {candidate.city && <p className="text-sm text-white/80">{candidate.city}</p>}
         </div>
