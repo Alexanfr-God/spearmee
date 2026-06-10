@@ -59,7 +59,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
     async (action: PointsAction) => {
       try {
         const next = await callAward({ data: { action } });
-        setState((prev) => ({ ...next, awarded: next.awarded }));
+        setState(next);
         if (next.awarded > 0) {
           haptic("medium");
           toast.success(t("points.earnedToast", { points: next.awarded }));
