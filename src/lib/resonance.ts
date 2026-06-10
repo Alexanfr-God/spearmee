@@ -55,9 +55,18 @@ export interface Signal {
   values?: Record<string, string | number>;
 }
 
+export interface AxisScore {
+  /** i18n key under "resonance.axes" */
+  key: string;
+  emoji: string;
+  /** 0–100 sub-score for this compatibility axis */
+  score: number;
+}
+
 export interface ResonanceResult {
   score: number;
   signals: Signal[];
+  breakdown: AxisScore[];
 }
 
 const TIMELINE_ORDER = ["within_1y", "1_3y", "someday", "undecided"];
@@ -128,7 +137,8 @@ export function computeResonance(
 
   // 15% — relationship goal
   const goalMatch = viewer.relationship_goal && viewer.relationship_goal === candidate.relationship_goal;
-  score += (goalMatch ? 1 : candidate.relationship_goal ? 0.3 : 0.5) * 15;
+  const goalScore = goalMatch ? 1 : candidate.relationship_goal ? 0.3 : 0.5;
+  score += goalScore * 15;
   if (goalMatch) signals.push({ id: "goal", emoji: "🎯", key: "sameGoal" });
 
   // 10% — location / distance
@@ -204,5 +214,16 @@ export function computeResonance(
   }
 
   const rounded = Math.max(0, Math.min(100, Math.round(score)));
-  return { score: rounded, signals: signals.slice(0, 5) };
+
+  // Per-axis sub-scores (0–100) for the compatibility breakdown UI.
+  const pct = (v: number) => Math.max(0, Math.min(100, Math.round(v * 100)));
+  const breakdown: AxisScore[] = [
+    { key: "children", emoji: "👶", score: pct(wc * 0.6 + tl * 0.4) },
+    { key: "values", emoji: "🎯", score: pct(goalScore * 0.6 + marriage * 0.4) },
+    { key: "lifestyle", emoji: "🌿", score: pct(lifestyle) },
+    { key: "location", emoji: "📍", score: pct(locScore) },
+    { key: "faith", emoji: "🙏", score: pct(relig) },
+  ];
+
+  return { score: rounded, signals: signals.slice(0, 5), breakdown };
 }

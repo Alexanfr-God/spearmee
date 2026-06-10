@@ -8,6 +8,7 @@ import {
   type ScoreProfile,
   type ScorePrefs,
   type Signal,
+  type AxisScore,
 } from "@/lib/resonance";
 
 const SCORE_FIELDS =
@@ -22,6 +23,7 @@ export interface DailyCandidate {
   city: string | null;
   score: number;
   signals: Signal[];
+  breakdown: AxisScore[];
   photo_path: string | null;
 }
 
@@ -126,6 +128,7 @@ export const getDailySet = createServerFn({ method: "GET" })
         city: p.city,
         score: r.score,
         signals: r.signals,
+        breakdown: r.breakdown,
         photo_path: photo,
       });
     }

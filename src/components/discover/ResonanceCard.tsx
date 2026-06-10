@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ChevronDown } from "lucide-react";
 
 import type { DailyCandidate } from "@/lib/daily.functions";
 import { haptic } from "@/lib/telegram";
@@ -14,6 +14,7 @@ export function ResonanceCard({
 }) {
   const { t } = useTranslation();
   const [revealed, setRevealed] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
@@ -75,6 +76,45 @@ export function ResonanceCard({
           </span>
         ))}
       </div>
+
+      {candidate.breakdown?.length > 0 && (
+        <div className="border-t border-border px-4 pb-4">
+          <button
+            type="button"
+            onClick={() => {
+              haptic("selection");
+              setShowBreakdown((v) => !v);
+            }}
+            className="flex w-full items-center justify-between py-3 text-sm font-semibold text-foreground"
+          >
+            {t("resonance.breakdown")}
+            <ChevronDown
+              className="h-4 w-4 text-muted-foreground transition-transform"
+              style={{ transform: showBreakdown ? "rotate(180deg)" : "none" }}
+            />
+          </button>
+          {showBreakdown && (
+            <div className="space-y-2.5 pb-1">
+              {candidate.breakdown.map((axis) => (
+                <div key={axis.key} className="flex items-center gap-3">
+                  <span className="w-28 shrink-0 text-xs font-medium text-foreground">
+                    {axis.emoji} {t(`resonance.axes.${axis.key}`)}
+                  </span>
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className="h-full rounded-full bg-primary transition-[width] duration-500"
+                      style={{ width: `${axis.score}%` }}
+                    />
+                  </div>
+                  <span className="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-muted-foreground">
+                    {axis.score}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Send, Languages, Baby } from "lucide-react";
+import { ChevronLeft, Send, Languages, Baby, Lightbulb, Loader2, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { translateMessage } from "@/lib/translate.functions";
+import { generateIcebreakers } from "@/lib/icebreaker.functions";
 import { haptic } from "@/lib/telegram";
 import { Input } from "@/components/ui/input";
 import { AiBabyDialog } from "@/components/matches/AiBabyDialog";
@@ -21,11 +22,14 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
   const { t, i18n } = useTranslation();
   const { profile } = useAuth();
   const callTranslate = useServerFn(translateMessage);
+  const callIcebreakers = useServerFn(generateIcebreakers);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [otherName, setOtherName] = useState<string | null>(null);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [showBaby, setShowBaby] = useState(false);
+  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [iceLoading, setIceLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,6 +96,20 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
     setTranslations((prev) => ({ ...prev, [m.id]: res.text }));
   };
 
+  const loadIcebreakers = async () => {
+    if (iceLoading) return;
+    haptic("light");
+    setIceLoading(true);
+    try {
+      const res = await callIcebreakers({ data: { match_id: matchId } });
+      setIcebreakers(res.suggestions ?? []);
+    } catch {
+      setIcebreakers([]);
+    } finally {
+      setIceLoading(false);
+    }
+  };
+
   return (
     <div className="mx-auto flex h-screen max-w-[420px] flex-col">
       <header className="flex items-center gap-2 border-b border-border bg-card px-2 py-3">
@@ -146,7 +164,52 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
         <div ref={endRef} />
       </div>
 
+      {/* Ice-breaker suggestions */}
+      {icebreakers.length > 0 && (
+        <div className="border-t border-border bg-card px-3 pt-2">
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-xs font-semibold text-muted-foreground">
+              {t("chat.icebreakerTitle")}
+            </span>
+            <button
+              onClick={() => setIcebreakers([])}
+              className="rounded-full p-0.5 text-muted-foreground"
+              aria-label={t("common.close")}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="flex flex-col gap-1.5 pb-1">
+            {icebreakers.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  haptic("selection");
+                  setText(s);
+                  setIcebreakers([]);
+                }}
+                className="rounded-2xl bg-accent px-3 py-2 text-left text-sm text-accent-foreground active:scale-[0.99]"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+        <button
+          onClick={loadIcebreakers}
+          disabled={iceLoading}
+          className="rounded-full bg-secondary p-2.5 text-secondary-foreground active:scale-95 disabled:opacity-60"
+          aria-label={t("chat.icebreaker")}
+        >
+          {iceLoading ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <Lightbulb className="h-5 w-5" />
+          )}
+        </button>
         <Input
           value={text}
           placeholder={t("chat.placeholder")}

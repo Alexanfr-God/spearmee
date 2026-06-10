@@ -123,6 +123,14 @@
     "matchBody": "You and {{name}} resonate with each other.",
     "sayHello": "Say hello",
     "keepGoing": "Keep going",
+    "breakdown": "Compatibility breakdown",
+    "axes": {
+      "children": "Children",
+      "values": "Values",
+      "lifestyle": "Lifestyle",
+      "location": "Location",
+      "faith": "Faith"
+    },
     "signals": {
       "bothWantChildren": "Both want children",
       "sameTimeline": "Similar timeline for kids",
@@ -152,7 +160,9 @@
     "autoTranslate": "Auto-translate",
     "copyTranslation": "Copy translation",
     "copied": "Copied",
-    "aiBaby": "See your AI baby 👶"
+    "aiBaby": "See your AI baby 👶",
+    "icebreaker": "Suggest what to say",
+    "icebreakerTitle": "Ideas to break the ice ✨"
   },
   "aiBaby": {
     "title": "Your AI baby preview",

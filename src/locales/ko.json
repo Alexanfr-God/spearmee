@@ -123,6 +123,14 @@
     "matchBody": "당신과 {{name}} 님이 서로 공명해요.",
     "sayHello": "인사하기",
     "keepGoing": "계속하기",
+    "breakdown": "궁합 분석",
+    "axes": {
+      "children": "자녀",
+      "values": "가치관",
+      "lifestyle": "생활 방식",
+      "location": "지역",
+      "faith": "신앙"
+    },
     "signals": {
       "bothWantChildren": "둘 다 아이를 원함",
       "sameTimeline": "비슷한 출산 계획",
@@ -152,7 +160,9 @@
     "autoTranslate": "자동 번역",
     "copyTranslation": "번역 복사",
     "copied": "복사됨",
-    "aiBaby": "AI 아기 미리보기 👶"
+    "aiBaby": "AI 아기 미리보기 👶",
+    "icebreaker": "무슨 말을 할지 추천",
+    "icebreakerTitle": "대화를 시작할 아이디어 ✨"
   },
   "aiBaby": {
     "title": "AI 아기 미리보기",
