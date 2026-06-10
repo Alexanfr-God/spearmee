@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { useAuth } from "@/hooks/useAuth";
 import { NavProvider, useNav } from "@/components/nav";
+import { PointsProvider } from "@/hooks/usePoints";
 import { isProfileComplete } from "@/lib/profile-complete";
 import { RegistrationWizard } from "@/components/onboarding/RegistrationWizard";
 import { BottomTabs } from "@/components/BottomTabs";
@@ -89,7 +90,9 @@ function Inner() {
 export function AppShell() {
   return (
     <NavProvider>
-      <Inner />
+      <PointsProvider>
+        <Inner />
+      </PointsProvider>
       <Toaster position="top-center" />
     </NavProvider>
   );
