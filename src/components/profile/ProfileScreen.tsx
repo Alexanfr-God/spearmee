@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ShieldCheck } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
+import { usePoints } from "@/hooks/usePoints";
 import { useNav } from "@/components/nav";
+import { PointsPill } from "@/components/points/PointsPill";
+import { VerifiedBadge } from "@/components/points/VerifiedBadge";
+import { VerifyDialog } from "@/components/points/VerifyDialog";
 import { profileCompletePercent } from "@/lib/profile-complete";
 import { logPremiumIntent } from "@/lib/helpers";
 import { ageFromBirthDate } from "@/lib/calc";
@@ -35,7 +41,9 @@ function Row({
 export function ProfileScreen() {
   const { t } = useTranslation();
   const { profile, telegramPhotoUrl, refreshProfile } = useAuth();
+  const { state } = usePoints();
   const nav = useNav();
+  const [showVerify, setShowVerify] = useState(false);
 
   if (!profile) return null;
 
@@ -69,12 +77,28 @@ export function ProfileScreen() {
           <h1 className="truncate text-xl font-bold text-foreground">
             {profile.display_name ?? t("profile.title")}
             {age != null && <span className="text-muted-foreground">, {age}</span>}
+            {profile.verified && <VerifiedBadge className="ml-1 inline align-text-bottom" />}
           </h1>
           {profile.city && (
             <p className="truncate text-sm text-muted-foreground">{profile.city}</p>
           )}
         </div>
       </header>
+
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              {t(`points.levels.${state.level}`)}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("points.total", { points: state.total })}
+              {state.streak > 1 && ` · ${t("points.streak", { count: state.streak })}`}
+            </p>
+          </div>
+          <PointsPill />
+        </div>
+      </div>
 
       <div className="rounded-xl border border-border bg-card p-4">
         <p className="text-sm font-medium text-foreground">
@@ -87,6 +111,23 @@ export function ProfileScreen() {
           />
         </div>
       </div>
+
+      {!profile.verified && (
+        <button
+          type="button"
+          onClick={() => {
+            haptic("selection");
+            setShowVerify(true);
+          }}
+          className="flex items-center gap-3 rounded-xl border border-primary/40 bg-primary/5 px-4 py-3.5 text-left active:opacity-90"
+        >
+          <ShieldCheck className="h-5 w-5 shrink-0 text-primary" />
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground">{t("verify.cardTitle")}</p>
+            <p className="text-xs text-muted-foreground">{t("verify.cardSub")}</p>
+          </div>
+        </button>
+      )}
 
       <div className="flex flex-col gap-2">
         <Row label={t("profile.editProfile")} onClick={nav.openEditProfile} />
@@ -126,6 +167,8 @@ export function ProfileScreen() {
       >
         {t("profile.premium")}
       </button>
+
+      {showVerify && <VerifyDialog onClose={() => setShowVerify(false)} />}
     </div>
   );
 }
