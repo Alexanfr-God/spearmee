@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, Send, Languages, Baby } from "lucide-react";
+import { ChevronLeft, Send, Languages, Baby, Lightbulb, Loader2, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { translateMessage } from "@/lib/translate.functions";
+import { generateIcebreakers } from "@/lib/icebreaker.functions";
 import { haptic } from "@/lib/telegram";
 import { Input } from "@/components/ui/input";
 import { AiBabyDialog } from "@/components/matches/AiBabyDialog";
@@ -21,11 +22,14 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
   const { t, i18n } = useTranslation();
   const { profile } = useAuth();
   const callTranslate = useServerFn(translateMessage);
+  const callIcebreakers = useServerFn(generateIcebreakers);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [otherName, setOtherName] = useState<string | null>(null);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [showBaby, setShowBaby] = useState(false);
+  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [iceLoading, setIceLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,6 +96,20 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
     setTranslations((prev) => ({ ...prev, [m.id]: res.text }));
   };
 
+  const loadIcebreakers = async () => {
+    if (iceLoading) return;
+    haptic("light");
+    setIceLoading(true);
+    try {
+      const res = await callIcebreakers({ data: { match_id: matchId } });
+      setIcebreakers(res.suggestions ?? []);
+    } catch {
+      setIcebreakers([]);
+    } finally {
+      setIceLoading(false);
+    }
+  };
+
   return (
     <div className="mx-auto flex h-screen max-w-[420px] flex-col">
       <header className="flex items-center gap-2 border-b border-border bg-card px-2 py-3">
@@ -147,6 +165,10 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
       </div>
 
       <div className="flex items-center gap-2 border-t border-border bg-card px-3 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+        {/* Ice-breaker suggestions */}
+        {icebreakers.length === 0 ? null : (
+          <></>
+        )}
         <Input
           value={text}
           placeholder={t("chat.placeholder")}
