@@ -123,6 +123,14 @@
     "matchBody": "Вы и {{name}} резонируете друг с другом.",
     "sayHello": "Поздороваться",
     "keepGoing": "Продолжить",
+    "breakdown": "Разбивка совместимости",
+    "axes": {
+      "children": "Дети",
+      "values": "Ценности",
+      "lifestyle": "Образ жизни",
+      "location": "География",
+      "faith": "Вера"
+    },
     "signals": {
       "bothWantChildren": "Оба хотят детей",
       "sameTimeline": "Похожие сроки по детям",

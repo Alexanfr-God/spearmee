@@ -123,6 +123,14 @@
     "matchBody": "You and {{name}} resonate with each other.",
     "sayHello": "Say hello",
     "keepGoing": "Keep going",
+    "breakdown": "Compatibility breakdown",
+    "axes": {
+      "children": "Children",
+      "values": "Values",
+      "lifestyle": "Lifestyle",
+      "location": "Location",
+      "faith": "Faith"
+    },
     "signals": {
       "bothWantChildren": "Both want children",
       "sameTimeline": "Similar timeline for kids",
