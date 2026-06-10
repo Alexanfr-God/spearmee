@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { signedUrls, logPremiumIntent } from "@/lib/helpers";
 import { useAuth } from "@/hooks/useAuth";
 import { useNav } from "@/components/nav";
+import { usePoints } from "@/hooks/usePoints";
+import { PointsPill } from "@/components/points/PointsPill";
 import { haptic } from "@/lib/telegram";
 import { ResonanceCard } from "@/components/discover/ResonanceCard";
 import { MatchModal } from "@/components/discover/MatchModal";
@@ -19,6 +21,7 @@ export function DiscoverScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const nav = useNav();
+  const { award } = usePoints();
   const callDailySet = useServerFn(getDailySet);
   const [index, setIndex] = useState(0);
   const [photoMap, setPhotoMap] = useState<Record<string, string>>({});
@@ -62,6 +65,7 @@ export function DiscoverScreen() {
         .maybeSingle();
       if (m) {
         haptic("success");
+        void award("got_match");
         setMatch(current);
         setIndex((i) => i + 1);
         return;
@@ -83,9 +87,12 @@ export function DiscoverScreen() {
 
   return (
     <div className="px-4 pt-4">
-      <header className="mb-3">
-        <h1 className="text-2xl font-bold text-foreground">{t("resonance.title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("resonance.subtitle")}</p>
+      <header className="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">{t("resonance.title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("resonance.subtitle")}</p>
+        </div>
+        <PointsPill className="mt-1 shrink-0" />
       </header>
 
       {done ? (
