@@ -44,7 +44,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
     startedFor.current = profile.id;
     (async () => {
       try {
-        const next = await callDailyVisit({ data: undefined as never });
+        const next = await callDailyVisit();
         setState(next);
         if (next.streak > 1) {
           toast(t("points.streakToast", { count: next.streak }));
