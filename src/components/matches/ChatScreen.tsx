@@ -196,6 +196,7 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
                   haptic("selection");
                   setText(s);
                   setIcebreakers([]);
+                  void award("icebreaker_used");
                 }}
                 className="rounded-2xl bg-accent px-3 py-2 text-left text-sm text-accent-foreground active:scale-[0.99]"
               >
