@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks/useAuth";
+import { isProfileComplete } from "@/lib/profile-complete";
 import {
   awardPoints,
   registerDailyVisit,
@@ -36,6 +37,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
   const callAward = useServerFn(awardPoints);
   const [state, setState] = useState<PointsState>(DEFAULT_STATE);
   const startedFor = useRef<string | null>(null);
+  const completeAwarded = useRef(false);
 
   useEffect(() => {
     if (!profile?.id || startedFor.current === profile.id) return;
@@ -68,6 +70,15 @@ export function PointsProvider({ children }: { children: ReactNode }) {
     },
     [callAward, t],
   );
+
+  // One-time award when the profile reaches the completeness bar.
+  useEffect(() => {
+    if (!profile || completeAwarded.current) return;
+    if (isProfileComplete(profile)) {
+      completeAwarded.current = true;
+      void award("profile_complete");
+    }
+  }, [profile, award]);
 
   return (
     <PointsContext.Provider value={{ state, award }}>
