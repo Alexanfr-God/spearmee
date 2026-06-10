@@ -263,6 +263,41 @@ export type Database = {
           },
         ]
       }
+      points_ledger: {
+        Row: {
+          action: string
+          created_at: string
+          dedupe_key: string | null
+          id: string
+          points: number
+          profile_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          dedupe_key?: string | null
+          id?: string
+          points: number
+          profile_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          dedupe_key?: string | null
+          id?: string
+          points?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       preferences: {
         Row: {
           age_max: number | null
@@ -400,6 +435,7 @@ export type Database = {
           is_premium: boolean | null
           language_code: string | null
           last_active: string | null
+          last_streak_date: string | null
           lat: number | null
           lng: number | null
           looking_for: string | null
@@ -409,8 +445,11 @@ export type Database = {
           relationship_goal: string | null
           religion: string | null
           smoking: string | null
+          streak_count: number
           telegram_id: number
           username: string | null
+          verified: boolean
+          verified_at: string | null
           wants_children: string | null
           wants_marriage: string | null
           weight_kg: number | null
@@ -440,6 +479,7 @@ export type Database = {
           is_premium?: boolean | null
           language_code?: string | null
           last_active?: string | null
+          last_streak_date?: string | null
           lat?: number | null
           lng?: number | null
           looking_for?: string | null
@@ -449,8 +489,11 @@ export type Database = {
           relationship_goal?: string | null
           religion?: string | null
           smoking?: string | null
+          streak_count?: number
           telegram_id: number
           username?: string | null
+          verified?: boolean
+          verified_at?: string | null
           wants_children?: string | null
           wants_marriage?: string | null
           weight_kg?: number | null
@@ -480,6 +523,7 @@ export type Database = {
           is_premium?: boolean | null
           language_code?: string | null
           last_active?: string | null
+          last_streak_date?: string | null
           lat?: number | null
           lng?: number | null
           looking_for?: string | null
@@ -489,8 +533,11 @@ export type Database = {
           relationship_goal?: string | null
           religion?: string | null
           smoking?: string | null
+          streak_count?: number
           telegram_id?: number
           username?: string | null
+          verified?: boolean
+          verified_at?: string | null
           wants_children?: string | null
           wants_marriage?: string | null
           weight_kg?: number | null
