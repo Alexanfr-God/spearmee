@@ -160,7 +160,9 @@
     "autoTranslate": "Авто-перевод",
     "copyTranslation": "Копировать перевод",
     "copied": "Скопировано",
-    "aiBaby": "AI-превью малыша 👶"
+    "aiBaby": "AI-превью малыша 👶",
+    "icebreaker": "Подсказать, что написать",
+    "icebreakerTitle": "Идеи для первого сообщения ✨"
   },
   "aiBaby": {
     "title": "AI-превью малыша",

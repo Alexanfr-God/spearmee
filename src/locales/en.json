@@ -160,7 +160,9 @@
     "autoTranslate": "Auto-translate",
     "copyTranslation": "Copy translation",
     "copied": "Copied",
-    "aiBaby": "See your AI baby 👶"
+    "aiBaby": "See your AI baby 👶",
+    "icebreaker": "Suggest what to say",
+    "icebreakerTitle": "Ideas to break the ice ✨"
   },
   "aiBaby": {
     "title": "Your AI baby preview",
