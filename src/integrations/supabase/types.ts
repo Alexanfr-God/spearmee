@@ -51,13 +51,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "ai_baby_results_requested_by_fkey"
-            columns: ["requested_by"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       articles: {
@@ -123,13 +116,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "daily_sets_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       matches: {
@@ -160,24 +146,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "matches_user_a_fkey"
-            columns: ["user_a"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "matches_user_b_fkey"
             columns: ["user_b"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "matches_user_b_fkey"
-            columns: ["user_b"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -257,13 +229,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       photos: {
@@ -294,13 +259,6 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "photos_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -336,13 +294,6 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "points_ledger_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -425,13 +376,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "preferences_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       premium_intent_events: {
@@ -462,13 +406,6 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "premium_intent_events_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -639,126 +576,17 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "swipes_swiper_id_fkey"
-            columns: ["swiper_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "swipes_target_id_fkey"
             columns: ["target_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "swipes_target_id_fkey"
-            columns: ["target_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      public_profiles: {
-        Row: {
-          bio: string | null
-          body_type: string | null
-          children_timeline: string | null
-          city: string | null
-          country: string | null
-          diet: string | null
-          display_name: string | null
-          drinking: string | null
-          education: string | null
-          ethnicity: string | null
-          exercise: string | null
-          eye_color: string | null
-          gender: string | null
-          hair_color: string | null
-          hair_type: string | null
-          has_children: string | null
-          height_cm: number | null
-          id: string | null
-          looking_for: string | null
-          native_languages: string[] | null
-          prompt_answer: string | null
-          relationship_goal: string | null
-          religion: string | null
-          smoking: string | null
-          username: string | null
-          verified: boolean | null
-          wants_children: string | null
-          wants_marriage: string | null
-          willing_to_relocate: string | null
-        }
-        Insert: {
-          bio?: string | null
-          body_type?: string | null
-          children_timeline?: string | null
-          city?: string | null
-          country?: string | null
-          diet?: string | null
-          display_name?: string | null
-          drinking?: string | null
-          education?: string | null
-          ethnicity?: string | null
-          exercise?: string | null
-          eye_color?: string | null
-          gender?: string | null
-          hair_color?: string | null
-          hair_type?: string | null
-          has_children?: string | null
-          height_cm?: number | null
-          id?: string | null
-          looking_for?: string | null
-          native_languages?: string[] | null
-          prompt_answer?: string | null
-          relationship_goal?: string | null
-          religion?: string | null
-          smoking?: string | null
-          username?: string | null
-          verified?: boolean | null
-          wants_children?: string | null
-          wants_marriage?: string | null
-          willing_to_relocate?: string | null
-        }
-        Update: {
-          bio?: string | null
-          body_type?: string | null
-          children_timeline?: string | null
-          city?: string | null
-          country?: string | null
-          diet?: string | null
-          display_name?: string | null
-          drinking?: string | null
-          education?: string | null
-          ethnicity?: string | null
-          exercise?: string | null
-          eye_color?: string | null
-          gender?: string | null
-          hair_color?: string | null
-          hair_type?: string | null
-          has_children?: string | null
-          height_cm?: number | null
-          id?: string | null
-          looking_for?: string | null
-          native_languages?: string[] | null
-          prompt_answer?: string | null
-          relationship_goal?: string | null
-          religion?: string | null
-          smoking?: string | null
-          username?: string | null
-          verified?: boolean | null
-          wants_children?: string | null
-          wants_marriage?: string | null
-          willing_to_relocate?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       is_match_member: {
