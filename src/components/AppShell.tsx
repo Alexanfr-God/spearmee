@@ -35,12 +35,7 @@ function Splash() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Logo size={64} />
-        </motion.div>
+        <Logo size={64} />
       </motion.div>
       <p className="mt-5 text-sm text-muted-foreground">{t("auth.signingIn")}</p>
       <div className="mt-6 h-1.5 w-32 overflow-hidden rounded-full bg-secondary">
