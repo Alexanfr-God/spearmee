@@ -26,7 +26,7 @@ function Splash() {
   const { t } = useTranslation();
   return (
     <Centered>
-      <div className="text-4xl font-extrabold tracking-tight text-primary">
+      <div className="font-display text-5xl font-semibold tracking-tight text-primary">
         {t("common.appName")}
       </div>
       <p className="mt-3 text-sm text-muted-foreground">{t("auth.signingIn")}</p>
@@ -41,7 +41,7 @@ function AuthError() {
   const { t } = useTranslation();
   return (
     <Centered>
-      <div className="text-2xl font-bold text-foreground">{t("common.appName")}</div>
+      <div className="font-display text-3xl font-semibold text-foreground">{t("common.appName")}</div>
       <p className="mt-3 text-sm text-muted-foreground">{t("auth.error")}</p>
     </Centered>
   );

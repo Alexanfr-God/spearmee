@@ -88,40 +88,17 @@ export function initWebApp(): void {
   }
 }
 
-/** Map Telegram theme params onto our CSS design tokens. */
+/** Sync only Telegram's light/dark preference. The brand palette (defined in
+ *  styles.css) stays the source of truth, so Spearmee looks the same inside and
+ *  outside Telegram — we intentionally do NOT inherit Telegram's colors. */
 export function applyTelegramTheme(): void {
   const wa = getWebApp();
   if (typeof document === "undefined") return;
   const root = document.documentElement;
   if (!wa) return;
 
-  const tp = wa.themeParams ?? {};
-  const set = (token: string, value?: string) => {
-    if (value) root.style.setProperty(token, value);
-  };
-
   if (wa.colorScheme === "dark") root.classList.add("dark");
   else root.classList.remove("dark");
-
-  set("--background", tp.bg_color);
-  set("--foreground", tp.text_color);
-  set("--card", tp.section_bg_color ?? tp.bg_color);
-  set("--card-foreground", tp.text_color);
-  set("--popover", tp.secondary_bg_color ?? tp.bg_color);
-  set("--popover-foreground", tp.text_color);
-  set("--muted", tp.secondary_bg_color);
-  set("--muted-foreground", tp.hint_color);
-  set("--secondary", tp.secondary_bg_color);
-  set("--secondary-foreground", tp.text_color);
-  set("--border", tp.secondary_bg_color);
-  set("--input", tp.secondary_bg_color);
-  // Brand accent derives from Telegram's button color when available.
-  set("--primary", tp.button_color);
-  set("--primary-foreground", tp.button_text_color);
-  set("--ring", tp.button_color);
-  set("--accent", tp.secondary_bg_color);
-  set("--accent-foreground", tp.text_color);
-  set("--destructive", tp.destructive_text_color);
 }
 
 export function haptic(

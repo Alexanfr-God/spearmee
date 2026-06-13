@@ -144,65 +144,77 @@
 }
 
 /* =========================================================
- * Spearmee design system — warm, trustworthy, family-minded.
- * These values are the defaults shown OUTSIDE Telegram. When the app
- * runs inside Telegram, applyTelegramTheme() overrides the core tokens
- * at runtime so the app matches the user's Telegram light/dark theme.
+ * Spearmee design system — "warm editorial": coral/terracotta, cream,
+ * graphite, soft gold (Hinge × Kinfolk warmth).
+ * These tokens are the brand source of truth in BOTH web and Telegram.
+ * Inside Telegram we only sync light/dark mode (see applyTelegramTheme);
+ * we intentionally do NOT inherit Telegram's colors so the brand stays
+ * consistent everywhere. All colors use oklch.
  * ========================================================= */
 :root {
   --radius: 1rem;
-  --background: oklch(0.99 0.006 70);
-  --foreground: oklch(0.24 0.03 35);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.03 35);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.03 35);
-  --primary: oklch(0.64 0.19 17);
-  --primary-foreground: oklch(0.99 0.01 60);
-  --secondary: oklch(0.96 0.02 40);
-  --secondary-foreground: oklch(0.3 0.04 30);
-  --muted: oklch(0.96 0.01 60);
-  --muted-foreground: oklch(0.52 0.03 40);
-  --accent: oklch(0.94 0.04 35);
-  --accent-foreground: oklch(0.3 0.05 25);
+  --background: oklch(0.985 0.012 78);
+  --foreground: oklch(0.26 0.025 45);
+  --card: oklch(0.997 0.006 84);
+  --card-foreground: oklch(0.26 0.025 45);
+  --popover: oklch(0.997 0.006 84);
+  --popover-foreground: oklch(0.26 0.025 45);
+  --primary: oklch(0.63 0.155 38);
+  --primary-foreground: oklch(0.99 0.012 80);
+  --secondary: oklch(0.95 0.022 72);
+  --secondary-foreground: oklch(0.33 0.04 45);
+  --muted: oklch(0.96 0.013 72);
+  --muted-foreground: oklch(0.53 0.03 48);
+  --accent: oklch(0.92 0.05 52);
+  --accent-foreground: oklch(0.3 0.05 40);
   --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.99 0.01 60);
-  --border: oklch(0.91 0.01 55);
-  --input: oklch(0.93 0.01 55);
-  --ring: oklch(0.64 0.19 17);
+  --destructive-foreground: oklch(0.99 0.01 70);
+  --border: oklch(0.9 0.015 66);
+  --input: oklch(0.92 0.013 66);
+  --ring: oklch(0.63 0.155 38);
 
-  --superlike: oklch(0.62 0.13 230);
-  --like: oklch(0.62 0.16 150);
-  --pass: oklch(0.6 0.03 40);
+  /* Soft gold — premium accent (spark, rewards, premium badges). */
+  --gold: oklch(0.82 0.1 85);
+  --gold-foreground: oklch(0.3 0.05 70);
+
+  --superlike: oklch(0.78 0.125 84);
+  --like: oklch(0.62 0.15 150);
+  --pass: oklch(0.6 0.025 50);
 
   --gradient-photo: linear-gradient(
     to top,
-    oklch(0.15 0.02 30 / 0.92) 0%,
-    oklch(0.15 0.02 30 / 0.5) 35%,
+    oklch(0.18 0.03 40 / 0.92) 0%,
+    oklch(0.18 0.03 40 / 0.5) 35%,
     transparent 70%
   );
-  --shadow-card: 0 12px 30px -8px oklch(0.4 0.05 30 / 0.25);
-  --shadow-soft: 0 6px 18px -6px oklch(0.4 0.05 30 / 0.18);
+  --shadow-card: 0 12px 30px -8px oklch(0.4 0.06 40 / 0.22);
+  --shadow-soft: 0 6px 18px -6px oklch(0.4 0.06 40 / 0.16);
 }
 
 .dark {
-  --background: oklch(0.2 0.02 30);
-  --foreground: oklch(0.97 0.01 60);
-  --card: oklch(0.25 0.02 30);
-  --card-foreground: oklch(0.97 0.01 60);
-  --popover: oklch(0.25 0.02 30);
-  --popover-foreground: oklch(0.97 0.01 60);
-  --primary: oklch(0.68 0.18 17);
-  --primary-foreground: oklch(0.15 0.02 30);
-  --secondary: oklch(0.3 0.02 30);
-  --secondary-foreground: oklch(0.97 0.01 60);
-  --muted: oklch(0.3 0.02 30);
-  --muted-foreground: oklch(0.7 0.02 50);
-  --accent: oklch(0.33 0.03 30);
-  --accent-foreground: oklch(0.97 0.01 60);
+  --background: oklch(0.205 0.022 42);
+  --foreground: oklch(0.96 0.012 78);
+  --card: oklch(0.25 0.022 42);
+  --card-foreground: oklch(0.96 0.012 78);
+  --popover: oklch(0.25 0.022 42);
+  --popover-foreground: oklch(0.96 0.012 78);
+  --primary: oklch(0.69 0.16 40);
+  --primary-foreground: oklch(0.18 0.02 40);
+  --secondary: oklch(0.3 0.025 42);
+  --secondary-foreground: oklch(0.96 0.012 78);
+  --muted: oklch(0.3 0.025 42);
+  --muted-foreground: oklch(0.72 0.025 60);
+  --accent: oklch(0.34 0.035 45);
+  --accent-foreground: oklch(0.96 0.012 78);
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.98 0.01 80);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.68 0.18 17);
+  --ring: oklch(0.69 0.16 40);
+
+  --gold: oklch(0.82 0.11 85);
+  --gold-foreground: oklch(0.2 0.03 70);
+
   --shadow-card: 0 12px 30px -8px oklch(0 0 0 / 0.5);
   --shadow-soft: 0 6px 18px -6px oklch(0 0 0 / 0.4);
 }
@@ -211,6 +223,10 @@
   --color-superlike: var(--superlike);
   --color-like: var(--like);
   --color-pass: var(--pass);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
 }
 
 @layer base {
@@ -220,9 +236,12 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-      sans-serif;
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
   }
 }
 
