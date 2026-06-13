@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Spearmee" },
+      { name: "description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Spearmee" },
+      { property: "og:description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Spearmee" },
+      { name: "twitter:description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp" },
     ],
     links: [
       {
