@@ -1,5 +1,8 @@
+import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { Toaster } from "@/components/ui/sonner";
+
+import { Logo } from "@/components/Logo";
 
 import { useAuth } from "@/hooks/useAuth";
 import { NavProvider, useNav } from "@/components/nav";
@@ -27,12 +30,25 @@ function Splash() {
   const { t } = useTranslation();
   return (
     <Centered>
-      <div className="text-4xl font-extrabold tracking-tight text-primary">
-        {t("common.appName")}
-      </div>
-      <p className="mt-3 text-sm text-muted-foreground">{t("auth.signingIn")}</p>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <motion.div
+          animate={{ y: [0, -7, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Logo size={64} />
+        </motion.div>
+      </motion.div>
+      <p className="mt-5 text-sm text-muted-foreground">{t("auth.signingIn")}</p>
       <div className="mt-6 h-1.5 w-32 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full w-1/2 animate-pulse rounded-full bg-primary" />
+        <motion.div
+          className="h-full w-1/2 rounded-full bg-primary"
+          animate={{ x: ["-110%", "260%"] }}
+          transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+        />
       </div>
     </Centered>
   );
@@ -42,8 +58,8 @@ function AuthError() {
   const { t } = useTranslation();
   return (
     <Centered>
-      <div className="text-2xl font-bold text-foreground">{t("common.appName")}</div>
-      <p className="mt-3 text-sm text-muted-foreground">{t("auth.error")}</p>
+      <Logo size={48} />
+      <p className="mt-4 text-sm text-muted-foreground">{t("auth.error")}</p>
     </Centered>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -115,72 +116,162 @@ export function DiscoverScreen() {
           <p className="mb-2 text-center text-xs font-medium text-muted-foreground">
             {t("resonance.progress", { current: index + 1, total: candidates.length })}
           </p>
-          <ResonanceCard candidate={current} photoUrl={current.photo_path ? photoMap[current.photo_path] : undefined} />
+
+          <div className="relative">
+            <AnimatePresence mode="popLayout">
+              <SwipeCard
+                key={current.id}
+                candidate={current}
+                photoUrl={current.photo_path ? photoMap[current.photo_path] : undefined}
+                onDecide={(a) => void act(a)}
+              />
+            </AnimatePresence>
+          </div>
+
           <div className="mt-5 flex items-center justify-center gap-4">
-            <ActionButton onClick={() => act("pass")} variant="pass" aria-label={t("resonance.pass")}>
+            <ActionButton
+              onClick={() => void act("pass")}
+              variant="pass"
+              ariaLabel={t("resonance.pass")}
+            >
               <X className="h-7 w-7" />
             </ActionButton>
-            <ActionButton onClick={() => act("superlike")} variant="superlike" aria-label={t("resonance.spark")}>
+            <ActionButton
+              onClick={() => void act("superlike")}
+              variant="superlike"
+              ariaLabel={t("resonance.spark")}
+            >
               <Sparkles className="h-6 w-6" />
             </ActionButton>
-            <ActionButton onClick={() => act("like")} variant="like" aria-label={t("resonance.resonate")}>
+            <ActionButton
+              onClick={() => void act("like")}
+              variant="like"
+              ariaLabel={t("resonance.resonate")}
+            >
               <Heart className="h-7 w-7" />
             </ActionButton>
           </div>
         </>
       )}
 
-      {match && (
-        <MatchModal
-          candidate={match}
-          photoUrl={match.photo_path ? photoMap[match.photo_path] : undefined}
-          onClose={() => setMatch(null)}
-          onSayHello={() => {
-            setMatch(null);
-            nav.setTab("matches");
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {match && (
+          <MatchModal
+            key="match"
+            candidate={match}
+            photoUrl={match.photo_path ? photoMap[match.photo_path] : undefined}
+            onClose={() => setMatch(null)}
+            onSayHello={() => {
+              setMatch(null);
+              nav.setTab("matches");
+            }}
+          />
+        )}
+      </AnimatePresence>
       {isFetching && !isLoading && null}
       <button hidden onClick={() => refetch()} />
     </div>
   );
 }
 
+/** A single draggable Resonance card with swipe-to-decide physics. */
+function SwipeCard({
+  candidate,
+  photoUrl,
+  onDecide,
+}: {
+  candidate: DailyCandidate;
+  photoUrl?: string;
+  onDecide: (action: "like" | "pass") => void;
+}) {
+  const { t } = useTranslation();
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-220, 220], [-14, 14]);
+  const likeOpacity = useTransform(x, [30, 130], [0, 1]);
+  const nopeOpacity = useTransform(x, [-30, -130], [0, 1]);
+  const [exitX, setExitX] = useState(0);
+
+  return (
+    <motion.div
+      style={{ x, rotate }}
+      drag="x"
+      dragSnapToOrigin
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.55}
+      onDragEnd={(_, info) => {
+        if (info.offset.x > 120 || info.velocity.x > 700) {
+          setExitX(460);
+          onDecide("like");
+        } else if (info.offset.x < -120 || info.velocity.x < -700) {
+          setExitX(-460);
+          onDecide("pass");
+        }
+      }}
+      initial={{ scale: 0.95, opacity: 0, y: 12 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      exit={{
+        x: exitX,
+        opacity: 0,
+        scale: exitX === 0 ? 0.95 : 1,
+        rotate: exitX > 0 ? 18 : exitX < 0 ? -18 : 0,
+        transition: { duration: 0.28 },
+      }}
+      whileTap={{ scale: 0.99 }}
+      className="relative will-change-transform"
+    >
+      <motion.div
+        aria-hidden
+        style={{ opacity: likeOpacity, color: "var(--like)", borderColor: "var(--like)" }}
+        className="pointer-events-none absolute left-5 top-6 z-10 -rotate-12 rounded-xl border-[3px] px-3 py-1 text-2xl font-extrabold uppercase tracking-wider"
+      >
+        {t("resonance.resonate")}
+      </motion.div>
+      <motion.div
+        aria-hidden
+        style={{
+          opacity: nopeOpacity,
+          color: "var(--destructive)",
+          borderColor: "var(--destructive)",
+        }}
+        className="pointer-events-none absolute right-5 top-6 z-10 rotate-12 rounded-xl border-[3px] px-3 py-1 text-2xl font-extrabold uppercase tracking-wider"
+      >
+        {t("resonance.pass")}
+      </motion.div>
+      <ResonanceCard candidate={candidate} photoUrl={photoUrl} />
+    </motion.div>
+  );
+}
+
 function Centered({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col items-center justify-center py-20 text-center">{children}</div>;
+  return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">{children}</div>
+  );
 }
 
 function ActionButton({
   children,
   onClick,
   variant,
-  ...rest
+  ariaLabel,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   variant: "pass" | "like" | "superlike";
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  ariaLabel?: string;
+}) {
   const color =
-    variant === "pass"
-      ? "var(--pass)"
-      : variant === "like"
-        ? "var(--like)"
-        : "var(--superlike)";
+    variant === "pass" ? "var(--pass)" : variant === "like" ? "var(--like)" : "var(--superlike)";
   const big = variant !== "superlike";
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
-      className="flex items-center justify-center rounded-full bg-card text-white shadow-[var(--shadow-soft)] active:scale-95"
-      style={{
-        backgroundColor: color,
-        width: big ? 64 : 56,
-        height: big ? 64 : 56,
-      }}
-      {...rest}
+      aria-label={ariaLabel}
+      whileTap={{ scale: 0.86 }}
+      className="flex items-center justify-center rounded-full text-white shadow-[var(--shadow-soft)]"
+      style={{ backgroundColor: color, width: big ? 64 : 56, height: big ? 64 : 56 }}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

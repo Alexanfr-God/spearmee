@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { Compass, Heart, BookOpen, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +18,7 @@ export function BottomTabs() {
   const nav = useNav();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[420px] border-t border-border bg-card/95 backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[420px] border-t border-border bg-card/80 backdrop-blur-xl">
       <div className="grid grid-cols-4 pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ key, icon: Icon, labelKey }) => {
           const active = nav.tab === key;
@@ -29,13 +30,35 @@ export function BottomTabs() {
                 haptic("selection");
                 nav.setTab(key);
               }}
-              className={cn(
-                "flex flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors",
-                active ? "text-primary" : "text-muted-foreground",
-              )}
+              className="relative flex flex-col items-center gap-1 py-2.5 text-xs font-medium"
             >
-              <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
-              {t(labelKey)}
+              {active && (
+                <motion.span
+                  layoutId="tab-indicator"
+                  className="absolute -top-px h-0.5 w-8 rounded-full bg-primary"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <motion.span
+                animate={{ scale: active ? 1.12 : 1, y: active ? -1 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 24 }}
+              >
+                <Icon
+                  className={cn(
+                    "h-5 w-5 transition-colors",
+                    active ? "text-primary" : "text-muted-foreground",
+                  )}
+                  strokeWidth={active ? 2.5 : 2}
+                />
+              </motion.span>
+              <span
+                className={cn(
+                  "transition-colors",
+                  active ? "text-primary" : "text-muted-foreground",
+                )}
+              >
+                {t(labelKey)}
+              </span>
             </button>
           );
         })}
