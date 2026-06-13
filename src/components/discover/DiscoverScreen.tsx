@@ -7,7 +7,7 @@ import { Loader2, Sparkles, X, Heart } from "lucide-react";
 
 import { getDailySet, type DailyCandidate } from "@/lib/daily.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { signedUrls, logPremiumIntent } from "@/lib/helpers";
+import { logPremiumIntent } from "@/lib/helpers";
 import { useAuth } from "@/hooks/useAuth";
 import { useNav } from "@/components/nav";
 import { usePoints } from "@/hooks/usePoints";
@@ -24,7 +24,6 @@ export function DiscoverScreen() {
   const { award } = usePoints();
   const callDailySet = useServerFn(getDailySet);
   const [index, setIndex] = useState(0);
-  const [photoMap, setPhotoMap] = useState<Record<string, string>>({});
   const [match, setMatch] = useState<DailyCandidate | null>(null);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
@@ -34,11 +33,6 @@ export function DiscoverScreen() {
 
   const candidates = useMemo(() => data?.candidates ?? [], [data]);
   const current = candidates[index];
-
-  useEffect(() => {
-    const paths = candidates.map((c) => c.photo_path).filter(Boolean) as string[];
-    if (paths.length) signedUrls(paths).then(setPhotoMap);
-  }, [candidates]);
 
   const act = async (action: "like" | "pass" | "superlike") => {
     if (!current || !profile) return;
@@ -115,7 +109,7 @@ export function DiscoverScreen() {
           <p className="mb-2 text-center text-xs font-medium text-muted-foreground">
             {t("resonance.progress", { current: index + 1, total: candidates.length })}
           </p>
-          <ResonanceCard candidate={current} photoUrl={current.photo_path ? photoMap[current.photo_path] : undefined} />
+          <ResonanceCard candidate={current} photoUrl={current.photo_url ?? undefined} />
           <div className="mt-5 flex items-center justify-center gap-4">
             <ActionButton onClick={() => act("pass")} variant="pass" aria-label={t("resonance.pass")}>
               <X className="h-7 w-7" />
@@ -133,7 +127,7 @@ export function DiscoverScreen() {
       {match && (
         <MatchModal
           candidate={match}
-          photoUrl={match.photo_path ? photoMap[match.photo_path] : undefined}
+          photoUrl={match.photo_url ?? undefined}
           onClose={() => setMatch(null)}
           onSayHello={() => {
             setMatch(null);
