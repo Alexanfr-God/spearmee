@@ -24,7 +24,7 @@ export interface DailyCandidate {
   score: number;
   signals: Signal[];
   breakdown: AxisScore[];
-  photo_path: string | null;
+  photo_url: string | null;
   verified: boolean;
 }
 
@@ -120,6 +120,22 @@ export const getDailySet = createServerFn({ method: "GET" })
       .in("profile_id", remainingIds)
       .order("position", { ascending: true });
 
+    // Sign candidate photos server-side (service role) so the private `photos`
+    // bucket never needs a broad client-readable SELECT policy. Candidates are
+    // not yet match members, so they could not sign these URLs from the client.
+    const photoPaths = [
+      ...new Set((photos ?? []).map((ph) => ph.storage_path).filter(Boolean)),
+    ] as string[];
+    const signedMap = new Map<string, string>();
+    if (photoPaths.length > 0) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("photos")
+        .createSignedUrls(photoPaths, 60 * 60);
+      for (const item of signed ?? []) {
+        if (item.signedUrl && item.path) signedMap.set(item.path, item.signedUrl);
+      }
+    }
+
     const byId = new Map((profs ?? []).map((p) => [p.id, p]));
     const candidates: DailyCandidate[] = [];
     for (const id of remainingIds) {
@@ -135,7 +151,7 @@ export const getDailySet = createServerFn({ method: "GET" })
         score: r.score,
         signals: r.signals,
         breakdown: r.breakdown,
-        photo_path: photo,
+        photo_url: photo ? (signedMap.get(photo) ?? null) : null,
         verified: (p as { verified?: boolean }).verified ?? false,
       });
     }
