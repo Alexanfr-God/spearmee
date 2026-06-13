@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { NavProvider, useNav } from "@/components/nav";
 import { PointsProvider } from "@/hooks/usePoints";
+import appBg from "@/assets/app-bg.png.asset.json";
 import { isProfileComplete } from "@/lib/profile-complete";
 import { RegistrationWizard } from "@/components/onboarding/RegistrationWizard";
 import { BottomTabs } from "@/components/BottomTabs";
@@ -90,6 +91,11 @@ function Inner() {
 export function AppShell() {
   return (
     <NavProvider>
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-background bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${appBg.url})` }}
+      />
       <PointsProvider>
         <Inner />
       </PointsProvider>
