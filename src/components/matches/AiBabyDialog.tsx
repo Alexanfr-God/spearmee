@@ -3,23 +3,33 @@ import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import { Loader2, X } from "lucide-react";
 
-import { generateAiBaby } from "@/lib/ai-baby.functions";
+import { generateAiBaby, type AiBabyReason } from "@/lib/ai-baby.functions";
 import { Button } from "@/components/ui/button";
+
+const ERROR_KEY: Record<AiBabyReason, string> = {
+  need_photos: "aiBaby.needPhotos",
+  rate_limit: "aiBaby.rateLimit",
+  no_credits: "aiBaby.noCredits",
+  unavailable: "aiBaby.unavailable",
+  error: "aiBaby.error",
+};
 
 export function AiBabyDialog({ matchId, onClose }: { matchId: string; onClose: () => void }) {
   const { t } = useTranslation();
   const callBaby = useServerFn(generateAiBaby);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [needPhotos, setNeedPhotos] = useState(false);
+  const [error, setError] = useState<AiBabyReason | null>(null);
 
   const generate = async () => {
     setLoading(true);
-    setNeedPhotos(false);
+    setError(null);
     try {
       const res = await callBaby({ data: { match_id: matchId } });
       if (res.ok) setImageUrl(res.image_url);
-      else setNeedPhotos(true);
+      else setError(res.reason);
+    } catch {
+      setError("error");
     } finally {
       setLoading(false);
     }
@@ -43,10 +53,10 @@ export function AiBabyDialog({ matchId, onClose }: { matchId: string; onClose: (
             <span className="text-6xl">👶</span>
           )}
         </div>
-        {needPhotos && <p className="mt-3 text-sm text-destructive">{t("aiBaby.needPhotos")}</p>}
+        {error && <p className="mt-3 text-sm text-destructive">{t(ERROR_KEY[error])}</p>}
         <p className="mt-3 text-xs text-muted-foreground">{t("aiBaby.disclaimer")}</p>
         <Button className="mt-4 w-full" onClick={generate} disabled={loading}>
-          {imageUrl ? t("aiBaby.again") : t("aiBaby.generate")}
+          {loading ? t("aiBaby.generating") : imageUrl ? t("aiBaby.again") : t("aiBaby.generate")}
         </Button>
       </div>
     </div>
