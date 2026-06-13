@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
 
@@ -16,16 +17,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/lib/telegram";
 import { cn } from "@/lib/utils";
 
-function Row({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
+const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
+
+function Row({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <button
+    <motion.button
       type="button"
+      whileTap={{ scale: 0.98 }}
       onClick={() => {
         haptic("selection");
         onClick();
@@ -34,7 +32,7 @@ function Row({
     >
       <span>{label}</span>
       <span className="text-muted-foreground">›</span>
-    </button>
+    </motion.button>
   );
 }
 
@@ -57,11 +55,15 @@ export function ProfileScreen() {
   }
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-5">
-      <header className="flex items-center gap-4">
-        <div className="h-16 w-16 overflow-hidden rounded-full bg-secondary">
+    <motion.div
+      initial="hidden"
+      animate="show"
+      variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+      className="flex flex-col gap-5 px-4 py-5"
+    >
+      <motion.header variants={item} className="flex items-center gap-4">
+        <div className="h-16 w-16 overflow-hidden rounded-full bg-secondary ring-2 ring-primary/15">
           {telegramPhotoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={telegramPhotoUrl}
               alt={profile.display_name ?? ""}
@@ -79,13 +81,14 @@ export function ProfileScreen() {
             {age != null && <span className="text-muted-foreground">, {age}</span>}
             {profile.verified && <VerifiedBadge className="ml-1 inline align-text-bottom" />}
           </h1>
-          {profile.city && (
-            <p className="truncate text-sm text-muted-foreground">{profile.city}</p>
-          )}
+          {profile.city && <p className="truncate text-sm text-muted-foreground">{profile.city}</p>}
         </div>
-      </header>
+      </motion.header>
 
-      <div className="rounded-xl border border-border bg-card p-4">
+      <motion.div
+        variants={item}
+        className="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card p-4"
+      >
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-foreground">
@@ -98,51 +101,58 @@ export function ProfileScreen() {
           </div>
           <PointsPill />
         </div>
-      </div>
+      </motion.div>
 
-      <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-sm font-medium text-foreground">
-          {t("profile.complete", { percent })}
-        </p>
+      <motion.div variants={item} className="rounded-2xl border border-border bg-card p-4">
+        <p className="text-sm font-medium text-foreground">{t("profile.complete", { percent })}</p>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-          <div
-            className="h-full rounded-full bg-primary transition-all"
-            style={{ width: `${percent}%` }}
+          <motion.div
+            className="h-full rounded-full bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: `${percent}%` }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           />
         </div>
-      </div>
+      </motion.div>
 
       {!profile.verified && (
-        <button
+        <motion.button
+          variants={item}
           type="button"
+          whileTap={{ scale: 0.98 }}
           onClick={() => {
             haptic("selection");
             setShowVerify(true);
           }}
-          className="flex items-center gap-3 rounded-xl border border-primary/40 bg-primary/5 px-4 py-3.5 text-left active:opacity-90"
+          className="flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-left"
+          style={{
+            borderColor: "color-mix(in oklab, var(--gold) 45%, transparent)",
+            background: "color-mix(in oklab, var(--gold) 10%, transparent)",
+          }}
         >
-          <ShieldCheck className="h-5 w-5 shrink-0 text-primary" />
+          <ShieldCheck className="h-5 w-5 shrink-0" style={{ color: "var(--gold)" }} />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground">{t("verify.cardTitle")}</p>
             <p className="text-xs text-muted-foreground">{t("verify.cardSub")}</p>
           </div>
-        </button>
+        </motion.button>
       )}
 
-      <div className="flex flex-col gap-2">
+      <motion.div variants={item} className="flex flex-col gap-2">
         <Row label={t("profile.editProfile")} onClick={nav.openEditProfile} />
         <Row label={t("profile.preferences")} onClick={nav.openPreferences} />
-      </div>
+      </motion.div>
 
-      <div className="space-y-2">
+      <motion.div variants={item} className="space-y-2">
         <p className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           {t("profile.language")}
         </p>
         <div className="grid grid-cols-3 gap-2">
           {SUPPORTED_LANGS.map((lang) => (
-            <button
+            <motion.button
               key={lang}
               type="button"
+              whileTap={{ scale: 0.97 }}
               onClick={() => changeLanguage(lang)}
               className={cn(
                 "rounded-xl border px-2 py-2.5 text-sm font-medium transition-colors",
@@ -152,23 +162,29 @@ export function ProfileScreen() {
               )}
             >
               {LANG_LABELS[lang]}
-            </button>
+            </motion.button>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      <button
+      <motion.button
+        variants={item}
         type="button"
+        whileTap={{ scale: 0.98 }}
         onClick={() => {
           haptic("medium");
           logPremiumIntent(profile.id, "premium_cta", { from: "profile" });
         }}
-        className="rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground active:opacity-90"
+        className="rounded-2xl px-4 py-3.5 text-sm font-semibold text-primary-foreground"
+        style={{
+          background:
+            "linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 70%, var(--coral)))",
+        }}
       >
         {t("profile.premium")}
-      </button>
+      </motion.button>
 
       {showVerify && <VerifyDialog onClose={() => setShowVerify(false)} />}
-    </div>
+    </motion.div>
   );
 }
