@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Loader2, Sparkles, X, Heart } from "lucide-react";
 
 import { getDailySet, type DailyCandidate } from "@/lib/daily.functions";
 import { supabase } from "@/integrations/supabase/client";
-import { signedUrls, logPremiumIntent } from "@/lib/helpers";
+import { logPremiumIntent } from "@/lib/helpers";
 import { useAuth } from "@/hooks/useAuth";
 import { useNav } from "@/components/nav";
 import { usePoints } from "@/hooks/usePoints";
@@ -25,7 +25,6 @@ export function DiscoverScreen() {
   const { award } = usePoints();
   const callDailySet = useServerFn(getDailySet);
   const [index, setIndex] = useState(0);
-  const [photoMap, setPhotoMap] = useState<Record<string, string>>({});
   const [match, setMatch] = useState<DailyCandidate | null>(null);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
@@ -35,11 +34,6 @@ export function DiscoverScreen() {
 
   const candidates = useMemo(() => data?.candidates ?? [], [data]);
   const current = candidates[index];
-
-  useEffect(() => {
-    const paths = candidates.map((c) => c.photo_path).filter(Boolean) as string[];
-    if (paths.length) signedUrls(paths).then(setPhotoMap);
-  }, [candidates]);
 
   const act = async (action: "like" | "pass" | "superlike") => {
     if (!current || !profile) return;
@@ -122,7 +116,7 @@ export function DiscoverScreen() {
               <SwipeCard
                 key={current.id}
                 candidate={current}
-                photoUrl={current.photo_path ? photoMap[current.photo_path] : undefined}
+                photoUrl={current.photo_url ?? undefined}
                 onDecide={(a) => void act(a)}
               />
             </AnimatePresence>
@@ -159,7 +153,7 @@ export function DiscoverScreen() {
           <MatchModal
             key="match"
             candidate={match}
-            photoUrl={match.photo_path ? photoMap[match.photo_path] : undefined}
+            photoUrl={match.photo_url ?? undefined}
             onClose={() => setMatch(null)}
             onSayHello={() => {
               setMatch(null);
