@@ -170,7 +170,11 @@
     "needPhotos": "Both of you need at least one photo to use this.",
     "disclaimer": "This is an AI-generated fun preview, not a real or scientific prediction of any actual child. Only face photos are used — appearance details you entered are never used as genetic input.",
     "generate": "Generate preview",
-    "again": "Generate again"
+    "again": "Generate again",
+    "rateLimit": "You've reached today's limit for this match — try again tomorrow.",
+    "noCredits": "AI previews are taking a short break — please try again later.",
+    "unavailable": "AI preview isn't available right now.",
+    "error": "Couldn't generate the preview — please try again."
   },
   "blog": {
     "title": "Blog",
