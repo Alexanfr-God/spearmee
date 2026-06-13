@@ -34,11 +34,10 @@ export function MatchesScreen() {
       const list = matches ?? [];
       const otherIds = list.map((m) => (m.user_a === profile.id ? m.user_b : m.user_a));
 
-      const { data: profsRaw } = await supabase
-        .from("public_profiles" as never)
+      const { data: profs } = await supabase
+        .from("profiles")
         .select("id, display_name")
         .in("id", otherIds.length ? otherIds : ["00000000-0000-0000-0000-000000000000"]);
-      const profs = (profsRaw ?? []) as { id: string; display_name: string | null }[];
       const { data: photos } = await supabase
         .from("photos")
         .select("profile_id, storage_path, position")
