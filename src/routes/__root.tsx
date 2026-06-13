@@ -78,19 +78,45 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Spearmee" },
-      { name: "description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
+      {
+        name: "description",
+        content:
+          "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family.",
+      },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Spearmee" },
-      { property: "og:description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
+      {
+        property: "og:description",
+        content:
+          "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Spearmee" },
-      { name: "twitter:description", content: "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp" },
+      {
+        name: "twitter:description",
+        content:
+          "Kindred Connect is a Telegram Mini App for finding serious relationships and partners for starting a family.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/rBeDOecijWc6PfwWIcSRKYGd0sm2/social-images/social-1781367860297-7353b078-40db-466e-accc-02a5a43d1441.webp",
+      },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,600&family=Inter:wght@400;500;600;700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
