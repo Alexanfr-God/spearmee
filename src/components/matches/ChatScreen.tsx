@@ -46,13 +46,12 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
       if (match && profile) {
         const otherId = match.user_a === profile.id ? match.user_b : match.user_a;
         const { data: p } = await supabase
-          .from("public_profiles" as never)
+          .from("profiles")
           .select("display_name, verified")
           .eq("id", otherId)
           .maybeSingle();
-        const pub = p as { display_name: string | null; verified: boolean } | null;
-        setOtherName(pub?.display_name ?? null);
-        setOtherVerified(pub?.verified ?? false);
+        setOtherName(p?.display_name ?? null);
+        setOtherVerified(p?.verified ?? false);
       }
       const { data } = await supabase
         .from("messages")
