@@ -33,8 +33,28 @@
   "tabs": {
     "discover": "발견",
     "matches": "매치",
+    "rewards": "리워드",
     "blog": "블로그",
     "profile": "프로필"
+  },
+  "rewards": {
+    "title": "리워드",
+    "subtitle": "Resonance Points를 모으고 레벨업하세요",
+    "points": "Resonance Points",
+    "daily": "매일",
+    "weekly": "매주",
+    "oneTime": "일회성",
+    "claimed": "받음"
+  },
+  "quests": {
+    "daily_resonate": "오늘 5명과 공명하기",
+    "daily_message": "오늘 메시지 보내기",
+    "weekly_streak": "3일 연속 유지하기",
+    "weekly_match": "이번 주 매치 만들기",
+    "once_photos": "사진 3장 추가하기",
+    "once_prefs": "원하는 상대 설정하기",
+    "once_verify": "인증 받기",
+    "once_profile": "프로필 완성하기"
   },
   "onboarding": {
     "step": "{{total}}단계 중 {{current}}",

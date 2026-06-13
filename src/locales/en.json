@@ -33,8 +33,28 @@
   "tabs": {
     "discover": "Discover",
     "matches": "Matches",
+    "rewards": "Rewards",
     "blog": "Blog",
     "profile": "Profile"
+  },
+  "rewards": {
+    "title": "Rewards",
+    "subtitle": "Earn Resonance Points and level up",
+    "points": "Resonance Points",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "oneTime": "One-time",
+    "claimed": "Claimed"
+  },
+  "quests": {
+    "daily_resonate": "Resonate with 5 people today",
+    "daily_message": "Send a message today",
+    "weekly_streak": "Keep a 3-day streak",
+    "weekly_match": "Make a match this week",
+    "once_photos": "Add 3 photos",
+    "once_prefs": "Set what you're looking for",
+    "once_verify": "Get verified",
+    "once_profile": "Complete your profile"
   },
   "onboarding": {
     "step": "Step {{current}} of {{total}}",

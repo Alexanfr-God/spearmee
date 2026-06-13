@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Compass, Heart, BookOpen, User } from "lucide-react";
+import { Compass, Heart, Gift, BookOpen, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { useNav, type Tab } from "@/components/nav";
 const TABS: { key: Tab; icon: typeof Compass; labelKey: string }[] = [
   { key: "discover", icon: Compass, labelKey: "tabs.discover" },
   { key: "matches", icon: Heart, labelKey: "tabs.matches" },
+  { key: "rewards", icon: Gift, labelKey: "tabs.rewards" },
   { key: "blog", icon: BookOpen, labelKey: "tabs.blog" },
   { key: "profile", icon: User, labelKey: "tabs.profile" },
 ];
@@ -19,7 +20,7 @@ export function BottomTabs() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-[420px] border-t border-border bg-card/80 backdrop-blur-xl">
-      <div className="grid grid-cols-4 pb-[env(safe-area-inset-bottom)]">
+      <div className="grid grid-cols-5 pb-[env(safe-area-inset-bottom)]">
         {TABS.map(({ key, icon: Icon, labelKey }) => {
           const active = nav.tab === key;
           return (
@@ -30,7 +31,7 @@ export function BottomTabs() {
                 haptic("selection");
                 nav.setTab(key);
               }}
-              className="relative flex flex-col items-center gap-1 py-2.5 text-xs font-medium"
+              className="relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium"
             >
               {active && (
                 <motion.span

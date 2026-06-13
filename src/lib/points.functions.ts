@@ -48,10 +48,7 @@ function levelForPoints(total: number): number {
 type Admin = (typeof import("@/integrations/supabase/client.server"))["supabaseAdmin"];
 
 async function sumPoints(admin: Admin, profileId: string): Promise<number> {
-  const { data } = await admin
-    .from("points_ledger")
-    .select("points")
-    .eq("profile_id", profileId);
+  const { data } = await admin.from("points_ledger").select("points").eq("profile_id", profileId);
   return (data ?? []).reduce((acc, r) => acc + (r.points ?? 0), 0);
 }
 
@@ -125,9 +122,7 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
 
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
-    const yesterdayStr = new Date(today.getTime() - 86400000)
-      .toISOString()
-      .slice(0, 10);
+    const yesterdayStr = new Date(today.getTime() - 86400000).toISOString().slice(0, 10);
 
     const { data: prof } = await supabaseAdmin
       .from("profiles")
@@ -155,4 +150,185 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
 
     const total = await sumPoints(supabaseAdmin, userId);
     return { total, awarded: 0, level: levelForPoints(total), streak };
+  });
+
+// =========================================================
+// QUESTS — goal-based bonuses. RP = in-app perks only (no crypto).
+// Idempotency reuses points_ledger's unique (profile_id, dedupe_key).
+// =========================================================
+export type QuestType = "daily" | "weekly" | "once";
+
+export interface QuestDef {
+  key: string;
+  type: QuestType;
+  points: number;
+  goal: number;
+}
+
+const QUESTS: QuestDef[] = [
+  { key: "daily_resonate", type: "daily", points: 15, goal: 5 },
+  { key: "daily_message", type: "daily", points: 10, goal: 1 },
+  { key: "weekly_streak", type: "weekly", points: 30, goal: 3 },
+  { key: "weekly_match", type: "weekly", points: 25, goal: 1 },
+  { key: "once_photos", type: "once", points: 20, goal: 3 },
+  { key: "once_prefs", type: "once", points: 15, goal: 1 },
+  { key: "once_verify", type: "once", points: 50, goal: 1 },
+  { key: "once_profile", type: "once", points: 25, goal: 1 },
+];
+
+export interface QuestState extends QuestDef {
+  progress: number;
+  claimed: boolean;
+  claimable: boolean;
+}
+
+function isoWeekKey(now: Date): string {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const dayNum = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - dayNum + 3);
+  const firstThursday = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+  const week =
+    1 +
+    Math.round(
+      ((d.getTime() - firstThursday.getTime()) / 86400000 -
+        3 +
+        ((firstThursday.getUTCDay() + 6) % 7)) /
+        7,
+    );
+  return `${d.getUTCFullYear()}-W${week}`;
+}
+
+function periodKey(type: QuestType, now: Date): string {
+  if (type === "once") return "once";
+  if (type === "daily") return now.toISOString().slice(0, 10);
+  return isoWeekKey(now);
+}
+
+function dedupeFor(q: QuestDef, now: Date): string {
+  return `quest:${q.key}:${periodKey(q.type, now)}`;
+}
+
+interface QuestProfile {
+  streak_count: number | null;
+  verified: boolean | null;
+  onboarded: boolean | null;
+}
+
+async function computeQuestStats(
+  admin: Admin,
+  userId: string,
+  prof: QuestProfile | null,
+  now: Date,
+): Promise<Record<string, number>> {
+  const dayStart = now.toISOString().slice(0, 10) + "T00:00:00.000Z";
+  const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
+
+  const [swipes, messages, photos, matches, prefs] = await Promise.all([
+    admin
+      .from("swipes")
+      .select("id", { count: "exact", head: true })
+      .eq("swiper_id", userId)
+      .in("action", ["like", "superlike"])
+      .gte("created_at", dayStart),
+    admin
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("sender_id", userId)
+      .gte("created_at", dayStart),
+    admin.from("photos").select("id", { count: "exact", head: true }).eq("profile_id", userId),
+    admin
+      .from("matches")
+      .select("id", { count: "exact", head: true })
+      .or(`user_a.eq.${userId},user_b.eq.${userId}`)
+      .gte("created_at", weekAgo),
+    admin.from("preferences").select("id", { count: "exact", head: true }).eq("profile_id", userId),
+  ]);
+
+  return {
+    daily_resonate: swipes.count ?? 0,
+    daily_message: messages.count ?? 0,
+    weekly_streak: prof?.streak_count ?? 0,
+    weekly_match: matches.count ?? 0,
+    once_photos: photos.count ?? 0,
+    once_prefs: (prefs.count ?? 0) > 0 ? 1 : 0,
+    once_verify: prof?.verified ? 1 : 0,
+    once_profile: prof?.onboarded ? 1 : 0,
+  };
+}
+
+/** Returns each quest's progress + claim state, plus current points. */
+export const getQuests = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ quests: QuestState[]; state: PointsState }> => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const now = new Date();
+
+    const { data: prof } = await supabaseAdmin
+      .from("profiles")
+      .select("streak_count, verified, onboarded")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const stats = await computeQuestStats(supabaseAdmin, userId, prof, now);
+
+    const keys = QUESTS.map((q) => dedupeFor(q, now));
+    const { data: claimedRows } = await supabaseAdmin
+      .from("points_ledger")
+      .select("dedupe_key")
+      .eq("profile_id", userId)
+      .in("dedupe_key", keys);
+    const claimedSet = new Set((claimedRows ?? []).map((r) => r.dedupe_key));
+
+    const quests: QuestState[] = QUESTS.map((q) => {
+      const progress = Math.min(q.goal, stats[q.key] ?? 0);
+      const claimed = claimedSet.has(dedupeFor(q, now));
+      return { ...q, progress, claimed, claimable: progress >= q.goal && !claimed };
+    });
+
+    const total = await sumPoints(supabaseAdmin, userId);
+    return {
+      quests,
+      state: { total, awarded: 0, level: levelForPoints(total), streak: prof?.streak_count ?? 0 },
+    };
+  });
+
+/** Claims a completed quest, awarding its bonus RP (idempotent per period). */
+export const claimQuest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { key: string }) => input)
+  .handler(async ({ data, context }): Promise<PointsState & { ok: boolean }> => {
+    const { userId } = context;
+    const q = QUESTS.find((x) => x.key === data.key);
+    if (!q) throw new Error("Unknown quest");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const now = new Date();
+
+    const { data: prof } = await supabaseAdmin
+      .from("profiles")
+      .select("streak_count, verified, onboarded")
+      .eq("id", userId)
+      .maybeSingle();
+
+    const stats = await computeQuestStats(supabaseAdmin, userId, prof, now);
+    const streak = prof?.streak_count ?? 0;
+
+    if ((stats[q.key] ?? 0) < q.goal) {
+      const total = await sumPoints(supabaseAdmin, userId);
+      return { ok: false, total, awarded: 0, level: levelForPoints(total), streak };
+    }
+
+    let awarded = 0;
+    const { error } = await supabaseAdmin.from("points_ledger").insert({
+      profile_id: userId,
+      action: "quest",
+      points: q.points,
+      dedupe_key: dedupeFor(q, now),
+    });
+    if (!error) awarded = q.points;
+    else if (error.code !== "23505") throw error; // already claimed → no-op
+
+    const total = await sumPoints(supabaseAdmin, userId);
+    return { ok: awarded > 0, total, awarded, level: levelForPoints(total), streak };
   });

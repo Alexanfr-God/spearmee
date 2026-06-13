@@ -33,8 +33,28 @@
   "tabs": {
     "discover": "Поиск",
     "matches": "Пары",
+    "rewards": "Награды",
     "blog": "Блог",
     "profile": "Профиль"
+  },
+  "rewards": {
+    "title": "Награды",
+    "subtitle": "Зарабатывай Resonance Points и повышай уровень",
+    "points": "Resonance Points",
+    "daily": "Ежедневные",
+    "weekly": "Еженедельные",
+    "oneTime": "Разовые",
+    "claimed": "Получено"
+  },
+  "quests": {
+    "daily_resonate": "Срезонируй с 5 людьми сегодня",
+    "daily_message": "Напиши сообщение сегодня",
+    "weekly_streak": "Держи серию 3 дня",
+    "weekly_match": "Получи пару на этой неделе",
+    "once_photos": "Добавь 3 фото",
+    "once_prefs": "Укажи, кого ищешь",
+    "once_verify": "Пройди верификацию",
+    "once_profile": "Заполни профиль"
   },
   "onboarding": {
     "step": "Шаг {{current}} из {{total}}",

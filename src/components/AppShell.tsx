@@ -15,6 +15,7 @@ import { DiscoverScreen } from "@/components/discover/DiscoverScreen";
 import { MatchesScreen } from "@/components/matches/MatchesScreen";
 import { ChatScreen } from "@/components/matches/ChatScreen";
 import { BlogScreen } from "@/components/blog/BlogScreen";
+import { RewardsScreen } from "@/components/rewards/RewardsScreen";
 import { ProfileScreen } from "@/components/profile/ProfileScreen";
 import { PreferencesScreen } from "@/components/profile/PreferencesScreen";
 
@@ -77,6 +78,7 @@ function MainApp() {
       <div className="flex-1 pb-20">
         {nav.tab === "discover" && <DiscoverScreen />}
         {nav.tab === "matches" && <MatchesScreen />}
+        {nav.tab === "rewards" && <RewardsScreen />}
         {nav.tab === "blog" && <BlogScreen />}
         {nav.tab === "profile" && <ProfileScreen />}
       </div>

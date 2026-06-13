@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
-export type Tab = "discover" | "matches" | "blog" | "profile";
+export type Tab = "discover" | "matches" | "rewards" | "blog" | "profile";
 
 interface NavState {
   tab: Tab;
@@ -37,8 +37,7 @@ export function NavProvider({ children }: { children: ReactNode }) {
       closeChat: () => setState((s) => ({ ...s, chatMatchId: null })),
       openEditProfile: () => setState((s) => ({ ...s, editingProfile: true })),
       openPreferences: () => setState((s) => ({ ...s, showPrefs: true })),
-      closeOverlay: () =>
-        setState((s) => ({ ...s, editingProfile: false, showPrefs: false })),
+      closeOverlay: () => setState((s) => ({ ...s, editingProfile: false, showPrefs: false })),
     }),
     [state],
   );
