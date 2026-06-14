@@ -45,7 +45,11 @@
     "weekly": "매주",
     "oneTime": "일회성",
     "claimed": "받음",
-    "perks": "퍽"
+    "perks": "퍽",
+    "multiplier": "획득 배수",
+    "multiplierLeft": "{{days}}일 남음",
+    "daysShort": "일",
+    "multiplierOn": "×{{value}} 획득 적용 🔥"
   },
   "perks": {
     "extra_picks": { "title": "추천 5명 더 받기", "desc": "최고의 매칭 새 묶음" },

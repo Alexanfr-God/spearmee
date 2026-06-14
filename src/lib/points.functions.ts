@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { PERK_COSTS } from "@/lib/perks";
+import { PERK_COSTS, MULTIPLIER_TIERS } from "@/lib/perks";
 
 /**
  * Server-authoritative points economy. The client may only request an action
@@ -36,6 +36,21 @@ export interface PointsState {
   awarded: number;
   level: number;
   streak: number;
+  multiplier?: number;
+  multiplierUntil?: string | null;
+}
+
+interface EarnProfile {
+  earn_multiplier?: number | null;
+  earn_multiplier_until?: string | null;
+}
+
+/** The active earn multiplier (×1 when none or expired). */
+function activeMultiplier(prof: EarnProfile | null): number {
+  const m = prof?.earn_multiplier;
+  const until = prof?.earn_multiplier_until;
+  if (!m || !until) return 1;
+  return new Date(until).getTime() > Date.now() ? m : 1;
 }
 
 function levelForPoints(total: number): number {
@@ -66,28 +81,32 @@ export const awardPoints = createServerFn({ method: "POST" })
     const today = new Date().toISOString().slice(0, 10);
     const dedupeKey = rule.dedupe ? rule.dedupe(today) : null;
 
+    const { data: prof } = await supabaseAdmin
+      .from("profiles")
+      .select("streak_count, earn_multiplier, earn_multiplier_until")
+      .eq("id", userId)
+      .maybeSingle();
+    const mult = activeMultiplier(prof as EarnProfile | null);
+    const points = Math.round(rule.points * mult);
+
     let awarded = 0;
     const { error } = await supabaseAdmin.from("points_ledger").insert({
       profile_id: userId,
       action: data.action,
-      points: rule.points,
+      points,
       dedupe_key: dedupeKey,
     });
-    if (!error) awarded = rule.points;
+    if (!error) awarded = points;
     else if (error.code !== "23505") throw error;
 
     const total = await sumPoints(supabaseAdmin, userId);
-    const { data: prof } = await supabaseAdmin
-      .from("profiles")
-      .select("streak_count")
-      .eq("id", userId)
-      .maybeSingle();
-
     return {
       total,
       awarded,
       level: levelForPoints(total),
-      streak: prof?.streak_count ?? 0,
+      streak: (prof as { streak_count?: number | null } | null)?.streak_count ?? 0,
+      multiplier: mult,
+      multiplierUntil: (prof as EarnProfile | null)?.earn_multiplier_until ?? null,
     };
   });
 
@@ -127,12 +146,12 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
 
     const { data: prof } = await supabaseAdmin
       .from("profiles")
-      .select("streak_count, last_streak_date")
+      .select("streak_count, last_streak_date, earn_multiplier, earn_multiplier_until")
       .eq("id", userId)
       .maybeSingle();
 
-    let streak = prof?.streak_count ?? 0;
-    const last = prof?.last_streak_date ?? null;
+    let streak = (prof as { streak_count?: number | null } | null)?.streak_count ?? 0;
+    const last = (prof as { last_streak_date?: string | null } | null)?.last_streak_date ?? null;
 
     if (last !== todayStr) {
       streak = last === yesterdayStr ? streak + 1 : 1;
@@ -142,15 +161,23 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
         .eq("id", userId);
     }
 
+    const mult = activeMultiplier(prof as EarnProfile | null);
     await supabaseAdmin.from("points_ledger").insert({
       profile_id: userId,
       action: "daily_login",
-      points: RULES.daily_login.points,
+      points: Math.round(RULES.daily_login.points * mult),
       dedupe_key: `daily_login:${todayStr}`,
     });
 
     const total = await sumPoints(supabaseAdmin, userId);
-    return { total, awarded: 0, level: levelForPoints(total), streak };
+    return {
+      total,
+      awarded: 0,
+      level: levelForPoints(total),
+      streak,
+      multiplier: mult,
+      multiplierUntil: (prof as EarnProfile | null)?.earn_multiplier_until ?? null,
+    };
   });
 
 // =========================================================
@@ -267,7 +294,7 @@ export const getQuests = createServerFn({ method: "GET" })
 
     const { data: prof } = await supabaseAdmin
       .from("profiles")
-      .select("streak_count, verified, onboarded")
+      .select("streak_count, verified, onboarded, earn_multiplier, earn_multiplier_until")
       .eq("id", userId)
       .maybeSingle();
 
@@ -290,7 +317,14 @@ export const getQuests = createServerFn({ method: "GET" })
     const total = await sumPoints(supabaseAdmin, userId);
     return {
       quests,
-      state: { total, awarded: 0, level: levelForPoints(total), streak: prof?.streak_count ?? 0 },
+      state: {
+        total,
+        awarded: 0,
+        level: levelForPoints(total),
+        streak: (prof as { streak_count?: number | null } | null)?.streak_count ?? 0,
+        multiplier: activeMultiplier(prof as EarnProfile | null),
+        multiplierUntil: (prof as EarnProfile | null)?.earn_multiplier_until ?? null,
+      },
     };
   });
 
@@ -308,26 +342,28 @@ export const claimQuest = createServerFn({ method: "POST" })
 
     const { data: prof } = await supabaseAdmin
       .from("profiles")
-      .select("streak_count, verified, onboarded")
+      .select("streak_count, verified, onboarded, earn_multiplier, earn_multiplier_until")
       .eq("id", userId)
       .maybeSingle();
 
     const stats = await computeQuestStats(supabaseAdmin, userId, prof, now);
-    const streak = prof?.streak_count ?? 0;
+    const streak = (prof as { streak_count?: number | null } | null)?.streak_count ?? 0;
+    const mult = activeMultiplier(prof as EarnProfile | null);
 
     if ((stats[q.key] ?? 0) < q.goal) {
       const total = await sumPoints(supabaseAdmin, userId);
       return { ok: false, total, awarded: 0, level: levelForPoints(total), streak };
     }
 
+    const points = Math.round(q.points * mult);
     let awarded = 0;
     const { error } = await supabaseAdmin.from("points_ledger").insert({
       profile_id: userId,
       action: "quest",
-      points: q.points,
+      points,
       dedupe_key: dedupeFor(q, now),
     });
-    if (!error) awarded = q.points;
+    if (!error) awarded = points;
     else if (error.code !== "23505") throw error; // already claimed → no-op
 
     const total = await sumPoints(supabaseAdmin, userId);
@@ -359,3 +395,37 @@ export const buyBoost = createServerFn({ method: "POST" })
 
     return { ok: true, total: balance - PERK_COSTS.boost };
   });
+
+/** Spend RP to set an earn multiplier for a window (buying replaces the active one). */
+export const buyMultiplier = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { value: number }) => input)
+  .handler(
+    async ({ data, context }): Promise<{ ok: boolean; reason?: "not_enough"; total: number }> => {
+      const { userId } = context;
+      const tier = MULTIPLIER_TIERS.find((tr) => tr.value === data.value);
+      if (!tier) throw new Error("Unknown tier");
+
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const balance = await sumPoints(supabaseAdmin, userId);
+      if (balance < tier.cost) {
+        return { ok: false, reason: "not_enough", total: balance };
+      }
+
+      await supabaseAdmin.from("points_ledger").insert({
+        profile_id: userId,
+        action: "perk:multiplier",
+        points: -tier.cost,
+        dedupe_key: null,
+      });
+      await supabaseAdmin
+        .from("profiles")
+        .update({
+          earn_multiplier: tier.value,
+          earn_multiplier_until: new Date(Date.now() + tier.days * 86400000).toISOString(),
+        } as never)
+        .eq("id", userId);
+
+      return { ok: true, total: balance - tier.cost };
+    },
+  );

@@ -45,7 +45,11 @@
     "weekly": "Weekly",
     "oneTime": "One-time",
     "claimed": "Claimed",
-    "perks": "Perks"
+    "perks": "Perks",
+    "multiplier": "Earn multiplier",
+    "multiplierLeft": "{{days}}d left",
+    "daysShort": "d",
+    "multiplierOn": "×{{value}} earning active 🔥"
   },
   "perks": {
     "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },

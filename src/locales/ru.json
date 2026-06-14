@@ -45,7 +45,11 @@
     "weekly": "Еженедельные",
     "oneTime": "Разовые",
     "claimed": "Получено",
-    "perks": "Перки"
+    "perks": "Перки",
+    "multiplier": "Множитель заработка",
+    "multiplierLeft": "осталось {{days}}д",
+    "daysShort": "д",
+    "multiplierOn": "×{{value}} к заработку 🔥"
   },
   "perks": {
     "extra_picks": { "title": "Ещё 5 анкет", "desc": "Свежая пачка лучших совпадений" },

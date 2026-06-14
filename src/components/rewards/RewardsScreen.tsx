@@ -9,17 +9,20 @@ import {
   getQuests,
   claimQuest,
   buyBoost,
+  buyMultiplier,
   type QuestState,
   type PointsState,
 } from "@/lib/points.functions";
 import { getMorePicks } from "@/lib/daily.functions";
-import { PERK_COSTS } from "@/lib/perks";
+import { PERK_COSTS, MULTIPLIER_TIERS } from "@/lib/perks";
 import { useNav } from "@/components/nav";
 import { haptic } from "@/lib/telegram";
 import { cn } from "@/lib/utils";
 
 const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000];
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
+const daysLeft = (until: string) =>
+  Math.max(1, Math.ceil((new Date(until).getTime() - Date.now()) / 86400000));
 
 const PERK_LIST = [
   { key: "extra_picks", cost: PERK_COSTS.extra_picks, icon: Sparkles },
@@ -33,6 +36,7 @@ export function RewardsScreen() {
   const callClaim = useServerFn(claimQuest);
   const callBoost = useServerFn(buyBoost);
   const callMore = useServerFn(getMorePicks);
+  const callBuyMult = useServerFn(buyMultiplier);
   const [quests, setQuests] = useState<QuestState[]>([]);
   const [state, setState] = useState<PointsState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,6 +99,28 @@ export function RewardsScreen() {
         } else {
           toast(t("perks.notEnough"));
         }
+      }
+      await load();
+    } finally {
+      setRedeeming(null);
+    }
+  };
+
+  const buyMult = async (value: number) => {
+    const tier = MULTIPLIER_TIERS.find((tr) => tr.value === value);
+    if (!state || !tier || state.total < tier.cost) {
+      toast(t("perks.notEnough"));
+      return;
+    }
+    setRedeeming(`mult-${value}`);
+    haptic("medium");
+    try {
+      const res = await callBuyMult({ data: { value } });
+      if (res.ok) {
+        haptic("success");
+        toast.success(t("rewards.multiplierOn", { value }));
+      } else {
+        toast(t("perks.notEnough"));
       }
       await load();
     } finally {
@@ -224,6 +250,56 @@ export function RewardsScreen() {
             </div>
           );
         })}
+      </motion.div>
+
+      {/* earn multiplier */}
+      <motion.div variants={item} className="space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("rewards.multiplier")}
+          </p>
+          {state.multiplier && state.multiplier > 1 && state.multiplierUntil && (
+            <span className="text-[11px] font-semibold text-primary">
+              ×{state.multiplier} ·{" "}
+              {t("rewards.multiplierLeft", { days: daysLeft(state.multiplierUntil) })}
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {MULTIPLIER_TIERS.map((tier) => {
+            const affordable = state.total >= tier.cost;
+            const active =
+              state.multiplier === tier.value &&
+              !!state.multiplierUntil &&
+              new Date(state.multiplierUntil).getTime() > Date.now();
+            return (
+              <motion.button
+                key={tier.value}
+                whileTap={{ scale: 0.96 }}
+                disabled={!affordable || redeeming === `mult-${tier.value}`}
+                onClick={() => buyMult(tier.value)}
+                className={cn(
+                  "flex flex-col items-center gap-0.5 rounded-2xl border p-3 text-center transition-colors",
+                  active
+                    ? "border-primary bg-primary/10"
+                    : affordable
+                      ? "border-border bg-card"
+                      : "border-border bg-card opacity-60",
+                )}
+              >
+                <span className="text-base font-bold text-foreground">×{tier.value}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {tier.days}
+                  {t("rewards.daysShort")}
+                </span>
+                <span className="mt-1 inline-flex items-center gap-0.5 text-[11px] font-semibold text-primary">
+                  <Gem className="h-3 w-3" />
+                  {tier.cost}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
       </motion.div>
 
       {groups.map((g) => {
