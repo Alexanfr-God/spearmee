@@ -415,6 +415,7 @@ export type Database = {
           bio: string | null
           birth_date: string | null
           body_type: string | null
+          boost_until: string | null
           children_timeline: string | null
           city: string | null
           country: string | null
@@ -422,6 +423,8 @@ export type Database = {
           diet: string | null
           display_name: string | null
           drinking: string | null
+          earn_multiplier: number | null
+          earn_multiplier_until: string | null
           education: string | null
           ethnicity: string | null
           exercise: string | null
@@ -444,6 +447,7 @@ export type Database = {
           prompt_answer: string | null
           relationship_goal: string | null
           religion: string | null
+          reveal_likers_until: string | null
           smoking: string | null
           streak_count: number
           telegram_id: number
@@ -459,6 +463,7 @@ export type Database = {
           bio?: string | null
           birth_date?: string | null
           body_type?: string | null
+          boost_until?: string | null
           children_timeline?: string | null
           city?: string | null
           country?: string | null
@@ -466,6 +471,8 @@ export type Database = {
           diet?: string | null
           display_name?: string | null
           drinking?: string | null
+          earn_multiplier?: number | null
+          earn_multiplier_until?: string | null
           education?: string | null
           ethnicity?: string | null
           exercise?: string | null
@@ -488,6 +495,7 @@ export type Database = {
           prompt_answer?: string | null
           relationship_goal?: string | null
           religion?: string | null
+          reveal_likers_until?: string | null
           smoking?: string | null
           streak_count?: number
           telegram_id: number
@@ -503,6 +511,7 @@ export type Database = {
           bio?: string | null
           birth_date?: string | null
           body_type?: string | null
+          boost_until?: string | null
           children_timeline?: string | null
           city?: string | null
           country?: string | null
@@ -510,6 +519,8 @@ export type Database = {
           diet?: string | null
           display_name?: string | null
           drinking?: string | null
+          earn_multiplier?: number | null
+          earn_multiplier_until?: string | null
           education?: string | null
           ethnicity?: string | null
           exercise?: string | null
@@ -532,6 +543,7 @@ export type Database = {
           prompt_answer?: string | null
           relationship_goal?: string | null
           religion?: string | null
+          reveal_likers_until?: string | null
           smoking?: string | null
           streak_count?: number
           telegram_id?: number
