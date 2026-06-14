@@ -14,7 +14,8 @@ export type PointsAction =
   | "daily_login"
   | "send_message"
   | "icebreaker_used"
-  | "got_match";
+  | "got_match"
+  | "social_linked";
 
 interface ActionRule {
   points: number;
@@ -29,6 +30,7 @@ const RULES: Record<PointsAction, ActionRule> = {
   got_match: { points: 20 },
   send_message: { points: 5, dedupe: (today) => `send_message:${today}` },
   icebreaker_used: { points: 5, dedupe: (today) => `icebreaker_used:${today}` },
+  social_linked: { points: 20, dedupe: () => "social_linked" },
 };
 
 /** One-time bonus when the daily streak first reaches a milestone (× multiplier). */

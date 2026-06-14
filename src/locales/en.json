@@ -56,6 +56,10 @@
     "reveal": "See who",
     "likeBack": "Like back"
   },
+  "socials": {
+    "title": "Your socials",
+    "hint": "Add a trust signal — earn points (optional)"
+  },
   "perks": {
     "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },
     "boost": { "title": "Boost · 1 hour", "desc": "Rank higher in others' discovery" },

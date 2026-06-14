@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-import { ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { ShieldCheck, Loader2, Link2 } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
 import { usePoints } from "@/hooks/usePoints";
@@ -16,6 +17,8 @@ import { setLanguage, SUPPORTED_LANGS, LANG_LABELS, type SupportedLang } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { haptic } from "@/lib/telegram";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
@@ -39,9 +42,13 @@ function Row({ label, onClick }: { label: string; onClick: () => void }) {
 export function ProfileScreen() {
   const { t } = useTranslation();
   const { profile, telegramPhotoUrl, refreshProfile } = useAuth();
-  const { state } = usePoints();
+  const { state, award } = usePoints();
   const nav = useNav();
   const [showVerify, setShowVerify] = useState(false);
+  const socials = (profile ?? {}) as { social_x?: string | null; social_instagram?: string | null };
+  const [socialX, setSocialX] = useState(socials.social_x ?? "");
+  const [socialIg, setSocialIg] = useState(socials.social_instagram ?? "");
+  const [savingSocial, setSavingSocial] = useState(false);
 
   if (!profile) return null;
 
@@ -52,6 +59,22 @@ export function ProfileScreen() {
     setLanguage(lang);
     await supabase.from("profiles").update({ language_code: lang }).eq("id", profile!.id);
     await refreshProfile();
+  }
+
+  async function saveSocials() {
+    setSavingSocial(true);
+    haptic("selection");
+    const hadNone = !socials.social_x && !socials.social_instagram;
+    const x = socialX.trim() || null;
+    const ig = socialIg.trim() || null;
+    await supabase
+      .from("profiles")
+      .update({ social_x: x, social_instagram: ig } as never)
+      .eq("id", profile!.id);
+    if (hadNone && (x || ig)) void award("social_linked");
+    await refreshProfile();
+    toast.success(t("common.saved"));
+    setSavingSocial(false);
   }
 
   return (
@@ -165,6 +188,32 @@ export function ProfileScreen() {
             </motion.button>
           ))}
         </div>
+      </motion.div>
+
+      <motion.div
+        variants={item}
+        className="space-y-2 rounded-2xl border border-border bg-card p-4"
+      >
+        <div className="flex items-center gap-2">
+          <Link2 className="h-4 w-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">{t("socials.title")}</p>
+        </div>
+        <p className="text-xs text-muted-foreground">{t("socials.hint")}</p>
+        <div className="space-y-2 pt-1">
+          <Input
+            value={socialX}
+            placeholder="X / Twitter @handle"
+            onChange={(e) => setSocialX(e.target.value)}
+          />
+          <Input
+            value={socialIg}
+            placeholder="Instagram @handle"
+            onChange={(e) => setSocialIg(e.target.value)}
+          />
+        </div>
+        <Button size="sm" className="mt-1 w-full" onClick={saveSocials} disabled={savingSocial}>
+          {savingSocial ? <Loader2 className="h-4 w-4 animate-spin" /> : t("common.save")}
+        </Button>
       </motion.div>
 
       <motion.button
