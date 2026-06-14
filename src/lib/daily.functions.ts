@@ -10,11 +10,18 @@ import {
   type Signal,
   type AxisScore,
 } from "@/lib/resonance";
+import { PERK_COSTS, EXTRA_PICKS_AMOUNT } from "@/lib/perks";
 
 const SCORE_FIELDS =
-  "id, display_name, birth_date, gender, height_cm, city, country, lat, lng, wants_children, children_timeline, relationship_goal, smoking, drinking, religion, diet, eye_color, hair_color, ethnicity, wants_marriage, willing_to_relocate, verified";
+  "id, display_name, birth_date, gender, height_cm, city, country, lat, lng, wants_children, children_timeline, relationship_goal, smoking, drinking, religion, diet, eye_color, hair_color, ethnicity, wants_marriage, willing_to_relocate, verified, boost_until";
 
 const DAILY_LIMIT = 7;
+
+/** Extra ranking weight for profiles with an active boost. */
+function boostBonus(p: unknown): number {
+  const b = (p as { boost_until?: string | null }).boost_until;
+  return b && new Date(b).getTime() > Date.now() ? 3 : 0;
+}
 
 export interface DailyCandidate {
   id: string;
@@ -86,12 +93,11 @@ export const getDailySet = createServerFn({ method: "GET" })
         .filter((p) => !swiped.has(p.id))
         .filter((p) => !isDealbroken(prefs, p as ScoreProfile))
         .map((p) => ({ p, r: computeResonance(viewer as ScoreProfile, prefs, p as ScoreProfile) }))
-        .sort(
-          (a, b) =>
-            b.r.score +
-            ((b.p as { verified?: boolean }).verified ? 2 : 0) -
-            (a.r.score + ((a.p as { verified?: boolean }).verified ? 2 : 0)),
-        )
+        .sort((a, b) => {
+          const rank = (x: { p: unknown; r: { score: number } }) =>
+            x.r.score + ((x.p as { verified?: boolean }).verified ? 2 : 0) + boostBonus(x.p);
+          return rank(b) - rank(a);
+        })
         .slice(0, DAILY_LIMIT);
 
       const candidate_ids = scored.map((s) => s.p.id);
@@ -158,3 +164,99 @@ export const getDailySet = createServerFn({ method: "GET" })
 
     return { total: candidateIds.length, remaining: candidates.length, candidates };
   });
+
+/** Spend RP for a fresh batch of top-scoring candidates appended to today's set. */
+export const getMorePicks = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+    async ({
+      context,
+    }): Promise<{
+      ok: boolean;
+      reason?: "not_enough" | "no_more";
+      added: number;
+      balance: number;
+    }> => {
+      const { userId } = context;
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      const { data: ledger } = await supabaseAdmin
+        .from("points_ledger")
+        .select("points")
+        .eq("profile_id", userId);
+      const balance = (ledger ?? []).reduce((acc, r) => acc + (r.points ?? 0), 0);
+      if (balance < PERK_COSTS.extra_picks) {
+        return { ok: false, reason: "not_enough", added: 0, balance };
+      }
+
+      const { data: viewer } = await supabaseAdmin
+        .from("profiles")
+        .select(SCORE_FIELDS)
+        .eq("id", userId)
+        .maybeSingle();
+      if (!viewer) return { ok: false, added: 0, balance };
+
+      const { data: prefsRow } = await supabaseAdmin
+        .from("preferences")
+        .select("*")
+        .eq("profile_id", userId)
+        .maybeSingle();
+      const prefs = (prefsRow ?? null) as ScorePrefs | null;
+
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: set } = await supabaseAdmin
+        .from("daily_sets")
+        .select("*")
+        .eq("profile_id", userId)
+        .eq("set_date", today)
+        .maybeSingle();
+      const existing = new Set<string>(set?.candidate_ids ?? []);
+
+      const { data: swipes } = await supabaseAdmin
+        .from("swipes")
+        .select("target_id")
+        .eq("swiper_id", userId);
+      const swiped = new Set((swipes ?? []).map((s) => s.target_id));
+
+      const { data: pool } = await supabaseAdmin
+        .from("profiles")
+        .select(SCORE_FIELDS)
+        .eq("onboarded", true)
+        .neq("id", userId)
+        .limit(400);
+
+      const fresh = (pool ?? [])
+        .filter((p) => !swiped.has(p.id) && !existing.has(p.id))
+        .filter((p) => !isDealbroken(prefs, p as ScoreProfile))
+        .map((p) => ({ p, r: computeResonance(viewer as ScoreProfile, prefs, p as ScoreProfile) }))
+        .sort((a, b) => b.r.score + boostBonus(b.p) - (a.r.score + boostBonus(a.p)))
+        .slice(0, EXTRA_PICKS_AMOUNT)
+        .map((s) => s.p.id);
+
+      if (fresh.length === 0) {
+        return { ok: false, reason: "no_more", added: 0, balance };
+      }
+
+      await supabaseAdmin.from("points_ledger").insert({
+        profile_id: userId,
+        action: "perk:extra_picks",
+        points: -PERK_COSTS.extra_picks,
+        dedupe_key: null,
+      });
+
+      const newIds = [...(set?.candidate_ids ?? []), ...fresh];
+      if (set) {
+        await supabaseAdmin
+          .from("daily_sets")
+          .update({ candidate_ids: newIds })
+          .eq("profile_id", userId)
+          .eq("set_date", today);
+      } else {
+        await supabaseAdmin
+          .from("daily_sets")
+          .insert({ profile_id: userId, set_date: today, candidate_ids: newIds, seen_ids: [] });
+      }
+
+      return { ok: true, added: fresh.length, balance: balance - PERK_COSTS.extra_picks };
+    },
+  );

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { PERK_COSTS } from "@/lib/perks";
 
 /**
  * Server-authoritative points economy. The client may only request an action
@@ -331,4 +332,30 @@ export const claimQuest = createServerFn({ method: "POST" })
 
     const total = await sumPoints(supabaseAdmin, userId);
     return { ok: awarded > 0, total, awarded, level: levelForPoints(total), streak };
+  });
+
+/** Spend RP to boost your profile in others' discovery for one hour. */
+export const buyBoost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ ok: boolean; reason?: "not_enough"; total: number }> => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const balance = await sumPoints(supabaseAdmin, userId);
+    if (balance < PERK_COSTS.boost) {
+      return { ok: false, reason: "not_enough", total: balance };
+    }
+
+    await supabaseAdmin.from("points_ledger").insert({
+      profile_id: userId,
+      action: "perk:boost",
+      points: -PERK_COSTS.boost,
+      dedupe_key: null,
+    });
+    await supabaseAdmin
+      .from("profiles")
+      .update({ boost_until: new Date(Date.now() + 3600000).toISOString() } as never)
+      .eq("id", userId);
+
+    return { ok: true, total: balance - PERK_COSTS.boost };
   });

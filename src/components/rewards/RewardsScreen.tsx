@@ -3,23 +3,41 @@ import { motion } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Loader2, Check, Flame } from "lucide-react";
+import { Loader2, Check, Flame, Sparkles, Rocket, Gem } from "lucide-react";
 
-import { getQuests, claimQuest, type QuestState, type PointsState } from "@/lib/points.functions";
+import {
+  getQuests,
+  claimQuest,
+  buyBoost,
+  type QuestState,
+  type PointsState,
+} from "@/lib/points.functions";
+import { getMorePicks } from "@/lib/daily.functions";
+import { PERK_COSTS } from "@/lib/perks";
+import { useNav } from "@/components/nav";
 import { haptic } from "@/lib/telegram";
 import { cn } from "@/lib/utils";
 
 const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000];
 const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
+const PERK_LIST = [
+  { key: "extra_picks", cost: PERK_COSTS.extra_picks, icon: Sparkles },
+  { key: "boost", cost: PERK_COSTS.boost, icon: Rocket },
+] as const;
+
 export function RewardsScreen() {
   const { t } = useTranslation();
+  const nav = useNav();
   const callGet = useServerFn(getQuests);
   const callClaim = useServerFn(claimQuest);
+  const callBoost = useServerFn(buyBoost);
+  const callMore = useServerFn(getMorePicks);
   const [quests, setQuests] = useState<QuestState[]>([]);
   const [state, setState] = useState<PointsState | null>(null);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState<string | null>(null);
+  const [redeeming, setRedeeming] = useState<string | null>(null);
 
   const load = async () => {
     try {
@@ -48,6 +66,39 @@ export function RewardsScreen() {
       await load();
     } finally {
       setClaiming(null);
+    }
+  };
+
+  const redeem = async (key: string) => {
+    if (!state || state.total < (key === "boost" ? PERK_COSTS.boost : PERK_COSTS.extra_picks)) {
+      toast(t("perks.notEnough"));
+      return;
+    }
+    setRedeeming(key);
+    haptic("medium");
+    try {
+      if (key === "extra_picks") {
+        const res = await callMore();
+        if (res.ok) {
+          haptic("success");
+          toast.success(t("perks.extraPicksDone", { count: res.added }));
+          await load();
+          nav.setTab("discover");
+          return;
+        }
+        toast(t(res.reason === "no_more" ? "perks.noMore" : "perks.notEnough"));
+      } else if (key === "boost") {
+        const res = await callBoost();
+        if (res.ok) {
+          haptic("success");
+          toast.success(t("perks.boostDone"));
+        } else {
+          toast(t("perks.notEnough"));
+        }
+      }
+      await load();
+    } finally {
+      setRedeeming(null);
     }
   };
 
@@ -125,6 +176,54 @@ export function RewardsScreen() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           />
         </div>
+      </motion.div>
+
+      {/* perks — spend RP */}
+      <motion.div variants={item} className="space-y-2">
+        <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("rewards.perks")}
+        </p>
+        {PERK_LIST.map((p) => {
+          const Icon = p.icon;
+          const affordable = state.total >= p.cost;
+          return (
+            <div
+              key={p.key}
+              className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5"
+            >
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                style={{ background: "color-mix(in oklab, var(--primary) 12%, transparent)" }}
+              >
+                <Icon className="h-5 w-5 text-primary" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground">{t(`perks.${p.key}.title`)}</p>
+                <p className="text-xs text-muted-foreground">{t(`perks.${p.key}.desc`)}</p>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                disabled={!affordable || redeeming === p.key}
+                onClick={() => redeem(p.key)}
+                className={cn(
+                  "inline-flex min-w-[3.75rem] items-center justify-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold",
+                  affordable
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground",
+                )}
+              >
+                {redeeming === p.key ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Gem className="h-3 w-3" />
+                    {p.cost}
+                  </>
+                )}
+              </motion.button>
+            </div>
+          );
+        })}
       </motion.div>
 
       {groups.map((g) => {

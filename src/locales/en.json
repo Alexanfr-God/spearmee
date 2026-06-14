@@ -44,7 +44,16 @@
     "daily": "Daily",
     "weekly": "Weekly",
     "oneTime": "One-time",
-    "claimed": "Claimed"
+    "claimed": "Claimed",
+    "perks": "Perks"
+  },
+  "perks": {
+    "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },
+    "boost": { "title": "Boost · 1 hour", "desc": "Rank higher in others' discovery" },
+    "extraPicksDone": "+{{count}} fresh picks ✨",
+    "boostDone": "Boosted for 1 hour 🚀",
+    "notEnough": "Not enough points yet",
+    "noMore": "No new people right now"
   },
   "quests": {
     "daily_resonate": "Resonate with 5 people today",

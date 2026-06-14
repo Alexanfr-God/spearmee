@@ -44,7 +44,16 @@
     "daily": "Ежедневные",
     "weekly": "Еженедельные",
     "oneTime": "Разовые",
-    "claimed": "Получено"
+    "claimed": "Получено",
+    "perks": "Перки"
+  },
+  "perks": {
+    "extra_picks": { "title": "Ещё 5 анкет", "desc": "Свежая пачка лучших совпадений" },
+    "boost": { "title": "Boost · 1 час", "desc": "Выше в выдаче у других" },
+    "extraPicksDone": "+{{count}} свежих анкет ✨",
+    "boostDone": "Boost на 1 час 🚀",
+    "notEnough": "Пока не хватает баллов",
+    "noMore": "Сейчас новых людей нет"
   },
   "quests": {
     "daily_resonate": "Срезонируй с 5 людьми сегодня",

@@ -44,7 +44,16 @@
     "daily": "매일",
     "weekly": "매주",
     "oneTime": "일회성",
-    "claimed": "받음"
+    "claimed": "받음",
+    "perks": "퍽"
+  },
+  "perks": {
+    "extra_picks": { "title": "추천 5명 더 받기", "desc": "최고의 매칭 새 묶음" },
+    "boost": { "title": "부스트 · 1시간", "desc": "다른 사람 추천에서 상위 노출" },
+    "extraPicksDone": "+{{count}}명 새 추천 ✨",
+    "boostDone": "1시간 동안 부스트 🚀",
+    "notEnough": "아직 포인트가 부족해요",
+    "noMore": "지금은 새로운 사람이 없어요"
   },
   "quests": {
     "daily_resonate": "오늘 5명과 공명하기",

@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Loader2, Sparkles, X, Heart } from "lucide-react";
 
-import { getDailySet, type DailyCandidate } from "@/lib/daily.functions";
+import { getDailySet, getMorePicks, type DailyCandidate } from "@/lib/daily.functions";
+import { PERK_COSTS } from "@/lib/perks";
 import { supabase } from "@/integrations/supabase/client";
 import { logPremiumIntent } from "@/lib/helpers";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,8 +25,10 @@ export function DiscoverScreen() {
   const nav = useNav();
   const { award } = usePoints();
   const callDailySet = useServerFn(getDailySet);
+  const callMore = useServerFn(getMorePicks);
   const [index, setIndex] = useState(0);
   const [match, setMatch] = useState<DailyCandidate | null>(null);
+  const [gettingMore, setGettingMore] = useState(false);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["dailySet"],
@@ -97,12 +100,32 @@ export function DiscoverScreen() {
           <Button
             variant="secondary"
             className="mt-5"
+            disabled={gettingMore}
             onClick={async () => {
-              if (profile) await logPremiumIntent(profile.id, "get_more_picks");
-              toast(t("resonance.getMoreLogged"));
+              setGettingMore(true);
+              try {
+                const res = await callMore();
+                if (res.ok) {
+                  haptic("success");
+                  await refetch();
+                  setIndex(0);
+                } else {
+                  toast(
+                    t(res.reason === "not_enough" ? "perks.notEnough" : "resonance.noCandidates"),
+                  );
+                }
+              } finally {
+                setGettingMore(false);
+              }
             }}
           >
-            {t("resonance.getMore")}
+            {gettingMore ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                {t("resonance.getMore")} · {PERK_COSTS.extra_picks}
+              </>
+            )}
           </Button>
         </Centered>
       ) : (
