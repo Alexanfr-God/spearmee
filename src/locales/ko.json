@@ -51,6 +51,11 @@
     "daysShort": "일",
     "multiplierOn": "×{{value}} 획득 적용 🔥"
   },
+  "likers": {
+    "title": "{{count}}명이 좋아해요",
+    "reveal": "누군지 보기",
+    "likeBack": "맞라이크"
+  },
   "perks": {
     "extra_picks": { "title": "추천 5명 더 받기", "desc": "최고의 매칭 새 묶음" },
     "boost": { "title": "부스트 · 1시간", "desc": "다른 사람 추천에서 상위 노출" },

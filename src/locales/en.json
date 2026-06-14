@@ -51,6 +51,11 @@
     "daysShort": "d",
     "multiplierOn": "×{{value}} earning active 🔥"
   },
+  "likers": {
+    "title": "{{count}} like you",
+    "reveal": "See who",
+    "likeBack": "Like back"
+  },
   "perks": {
     "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },
     "boost": { "title": "Boost · 1 hour", "desc": "Rank higher in others' discovery" },

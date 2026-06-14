@@ -10,7 +10,7 @@ import {
   type Signal,
   type AxisScore,
 } from "@/lib/resonance";
-import { PERK_COSTS, EXTRA_PICKS_AMOUNT } from "@/lib/perks";
+import { PERK_COSTS, EXTRA_PICKS_AMOUNT, REVEAL_HOURS } from "@/lib/perks";
 
 const SCORE_FIELDS =
   "id, display_name, birth_date, gender, height_cm, city, country, lat, lng, wants_children, children_timeline, relationship_goal, smoking, drinking, religion, diet, eye_color, hair_color, ethnicity, wants_marriage, willing_to_relocate, verified, boost_until";
@@ -258,5 +258,142 @@ export const getMorePicks = createServerFn({ method: "POST" })
       }
 
       return { ok: true, added: fresh.length, balance: balance - PERK_COSTS.extra_picks };
+    },
+  );
+
+export interface LikerCard {
+  id: string;
+  display_name: string | null;
+  age: number | null;
+  city: string | null;
+  photo_url: string | null;
+  score: number;
+}
+
+export interface LikersResult {
+  count: number;
+  unlocked: boolean;
+  likers: LikerCard[];
+}
+
+/** People who liked the viewer (pending, not yet acted on). Profiles are only
+ *  returned while the "reveal" window is active; otherwise just the count. */
+export const getLikers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<LikersResult> => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: incoming } = await supabaseAdmin
+      .from("swipes")
+      .select("swiper_id")
+      .eq("target_id", userId)
+      .in("action", ["like", "superlike"]);
+    const likerIds = [...new Set((incoming ?? []).map((s) => s.swiper_id))];
+    if (likerIds.length === 0) return { count: 0, unlocked: false, likers: [] };
+
+    const { data: mySwipes } = await supabaseAdmin
+      .from("swipes")
+      .select("target_id")
+      .eq("swiper_id", userId);
+    const swiped = new Set((mySwipes ?? []).map((s) => s.target_id));
+    const pending = likerIds.filter((id) => !swiped.has(id));
+    const count = pending.length;
+    if (count === 0) return { count: 0, unlocked: false, likers: [] };
+
+    const { data: me } = await supabaseAdmin
+      .from("profiles")
+      .select("reveal_likers_until")
+      .eq("id", userId)
+      .maybeSingle();
+    const until = (me as { reveal_likers_until?: string | null } | null)?.reveal_likers_until;
+    const unlocked = !!until && new Date(until).getTime() > Date.now();
+    if (!unlocked) return { count, unlocked: false, likers: [] };
+
+    const { data: viewer } = await supabaseAdmin
+      .from("profiles")
+      .select(SCORE_FIELDS)
+      .eq("id", userId)
+      .maybeSingle();
+    const { data: prefsRow } = await supabaseAdmin
+      .from("preferences")
+      .select("*")
+      .eq("profile_id", userId)
+      .maybeSingle();
+    const prefs = (prefsRow ?? null) as ScorePrefs | null;
+
+    const { data: profs } = await supabaseAdmin
+      .from("profiles")
+      .select(SCORE_FIELDS)
+      .in("id", pending);
+    const { data: photos } = await supabaseAdmin
+      .from("photos")
+      .select("profile_id, storage_path, position")
+      .in("profile_id", pending)
+      .order("position", { ascending: true });
+
+    const photoPaths = [
+      ...new Set((photos ?? []).map((ph) => ph.storage_path).filter(Boolean)),
+    ] as string[];
+    const signedMap = new Map<string, string>();
+    if (photoPaths.length > 0) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("photos")
+        .createSignedUrls(photoPaths, 60 * 60);
+      for (const it of signed ?? []) {
+        if (it.signedUrl && it.path) signedMap.set(it.path, it.signedUrl);
+      }
+    }
+
+    const byId = new Map((profs ?? []).map((p) => [p.id, p]));
+    const likers: LikerCard[] = [];
+    for (const id of pending) {
+      const p = byId.get(id);
+      if (!p) continue;
+      const r = computeResonance(viewer as ScoreProfile, prefs, p as ScoreProfile);
+      const photo = (photos ?? []).find((ph) => ph.profile_id === id)?.storage_path ?? null;
+      likers.push({
+        id,
+        display_name: p.display_name,
+        age: ageFromBirthDate(p.birth_date),
+        city: p.city,
+        photo_url: photo ? (signedMap.get(photo) ?? null) : null,
+        score: r.score,
+      });
+    }
+    return { count, unlocked: true, likers };
+  });
+
+/** Spend RP to unlock "who liked you" for a window. */
+export const revealLikers = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(
+    async ({ context }): Promise<{ ok: boolean; reason?: "not_enough"; balance: number }> => {
+      const { userId } = context;
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+      const { data: ledger } = await supabaseAdmin
+        .from("points_ledger")
+        .select("points")
+        .eq("profile_id", userId);
+      const balance = (ledger ?? []).reduce((acc, r) => acc + (r.points ?? 0), 0);
+      if (balance < PERK_COSTS.reveal_likers) {
+        return { ok: false, reason: "not_enough", balance };
+      }
+
+      await supabaseAdmin.from("points_ledger").insert({
+        profile_id: userId,
+        action: "perk:reveal_likers",
+        points: -PERK_COSTS.reveal_likers,
+        dedupe_key: null,
+      });
+      await supabaseAdmin
+        .from("profiles")
+        .update({
+          reveal_likers_until: new Date(Date.now() + REVEAL_HOURS * 3600000).toISOString(),
+        } as never)
+        .eq("id", userId);
+
+      return { ok: true, balance: balance - PERK_COSTS.reveal_likers };
     },
   );

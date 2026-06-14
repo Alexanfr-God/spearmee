@@ -51,6 +51,11 @@
     "daysShort": "д",
     "multiplierOn": "×{{value}} к заработку 🔥"
   },
+  "likers": {
+    "title": "Тебя лайкнули: {{count}}",
+    "reveal": "Кто это",
+    "likeBack": "Лайк в ответ"
+  },
   "perks": {
     "extra_picks": { "title": "Ещё 5 анкет", "desc": "Свежая пачка лучших совпадений" },
     "boost": { "title": "Boost · 1 час", "desc": "Выше в выдаче у других" },

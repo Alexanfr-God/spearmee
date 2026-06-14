@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNav } from "@/components/nav";
 import { signedUrls } from "@/lib/helpers";
 import { haptic } from "@/lib/telegram";
+import { LikersCard } from "@/components/matches/LikersCard";
 
 interface MatchRow {
   id: string;
@@ -78,6 +79,7 @@ export function MatchesScreen() {
   return (
     <div className="px-4 pt-4">
       <h1 className="mb-3 text-2xl font-bold text-foreground">{t("matches.title")}</h1>
+      <LikersCard />
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 className="h-7 w-7 animate-spin text-primary" />
@@ -99,7 +101,9 @@ export function MatchesScreen() {
                   {r.photoUrl ? (
                     <img src={r.photoUrl} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-2xl">🌿</div>
+                    <div className="flex h-full w-full items-center justify-center text-2xl">
+                      🌿
+                    </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">

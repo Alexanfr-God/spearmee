@@ -2,7 +2,11 @@
 export const PERK_COSTS = {
   extra_picks: 60,
   boost: 100,
+  reveal_likers: 80,
 } as const;
+
+/** Hours that "see who liked you" stays unlocked after redeeming. */
+export const REVEAL_HOURS = 24;
 
 /** How many fresh candidates an "extra picks" redemption appends. */
 export const EXTRA_PICKS_AMOUNT = 5;
