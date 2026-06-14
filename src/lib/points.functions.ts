@@ -31,6 +31,9 @@ const RULES: Record<PointsAction, ActionRule> = {
   icebreaker_used: { points: 5, dedupe: (today) => `icebreaker_used:${today}` },
 };
 
+/** One-time bonus when the daily streak first reaches a milestone (× multiplier). */
+const STREAK_MILESTONES: Record<number, number> = { 3: 20, 7: 40, 14: 80, 30: 150 };
+
 export interface PointsState {
   total: number;
   awarded: number;
@@ -152,6 +155,7 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
 
     let streak = (prof as { streak_count?: number | null } | null)?.streak_count ?? 0;
     const last = (prof as { last_streak_date?: string | null } | null)?.last_streak_date ?? null;
+    const mult = activeMultiplier(prof as EarnProfile | null);
 
     if (last !== todayStr) {
       streak = last === yesterdayStr ? streak + 1 : 1;
@@ -159,9 +163,18 @@ export const registerDailyVisit = createServerFn({ method: "POST" })
         .from("profiles")
         .update({ streak_count: streak, last_streak_date: todayStr })
         .eq("id", userId);
+
+      const milestoneBonus = STREAK_MILESTONES[streak];
+      if (milestoneBonus) {
+        await supabaseAdmin.from("points_ledger").insert({
+          profile_id: userId,
+          action: "streak_bonus",
+          points: Math.round(milestoneBonus * mult),
+          dedupe_key: `streak:${streak}:${todayStr}`,
+        });
+      }
     }
 
-    const mult = activeMultiplier(prof as EarnProfile | null);
     await supabaseAdmin.from("points_ledger").insert({
       profile_id: userId,
       action: "daily_login",
