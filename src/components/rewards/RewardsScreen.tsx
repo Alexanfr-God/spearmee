@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Loader2, Check, Flame, Sparkles, Rocket, Gem } from "lucide-react";
+import { Loader2, Check, Flame, Sparkles, Rocket, Gem, Play } from "lucide-react";
 
 import {
   getQuests,
@@ -203,6 +203,25 @@ export function RewardsScreen() {
           />
         </div>
       </motion.div>
+
+      {/* play the mini-game */}
+      <motion.button
+        variants={item}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => {
+          haptic("medium");
+          nav.openGame();
+        }}
+        className="flex items-center gap-3 overflow-hidden rounded-2xl border border-border p-4 text-left"
+        style={{ background: "linear-gradient(120deg, #2a1a5e, #0c0726)" }}
+      >
+        <span className="text-2xl">🧬</span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-white">{t("game.title")}</p>
+          <p className="text-xs text-white/70">{t("game.subtitle")}</p>
+        </div>
+        <Play className="h-5 w-5 shrink-0 text-white" />
+      </motion.button>
 
       {/* perks — spend RP */}
       <motion.div variants={item} className="space-y-2">

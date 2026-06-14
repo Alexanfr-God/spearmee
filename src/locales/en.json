@@ -60,6 +60,14 @@
     "title": "Your socials",
     "hint": "Add a trust signal — earn points (optional)"
   },
+  "game": {
+    "title": "Spearmee Run",
+    "subtitle": "Race to the egg · earn points",
+    "over": "Game over",
+    "reached": "Reached level {{level}}",
+    "again": "Play again",
+    "exit": "Exit"
+  },
   "perks": {
     "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },
     "boost": { "title": "Boost · 1 hour", "desc": "Rank higher in others' discovery" },

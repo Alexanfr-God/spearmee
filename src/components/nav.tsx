@@ -7,6 +7,7 @@ interface NavState {
   chatMatchId: string | null;
   editingProfile: boolean;
   showPrefs: boolean;
+  playingGame: boolean;
 }
 
 interface NavContextValue extends NavState {
@@ -15,6 +16,8 @@ interface NavContextValue extends NavState {
   closeChat: () => void;
   openEditProfile: () => void;
   openPreferences: () => void;
+  openGame: () => void;
+  closeGame: () => void;
   closeOverlay: () => void;
 }
 
@@ -26,17 +29,26 @@ export function NavProvider({ children }: { children: ReactNode }) {
     chatMatchId: null,
     editingProfile: false,
     showPrefs: false,
+    playingGame: false,
   });
 
   const value = useMemo<NavContextValue>(
     () => ({
       ...state,
       setTab: (tab) =>
-        setState({ tab, chatMatchId: null, editingProfile: false, showPrefs: false }),
+        setState({
+          tab,
+          chatMatchId: null,
+          editingProfile: false,
+          showPrefs: false,
+          playingGame: false,
+        }),
       openChat: (chatMatchId) => setState((s) => ({ ...s, chatMatchId })),
       closeChat: () => setState((s) => ({ ...s, chatMatchId: null })),
       openEditProfile: () => setState((s) => ({ ...s, editingProfile: true })),
       openPreferences: () => setState((s) => ({ ...s, showPrefs: true })),
+      openGame: () => setState((s) => ({ ...s, playingGame: true })),
+      closeGame: () => setState((s) => ({ ...s, playingGame: false })),
       closeOverlay: () => setState((s) => ({ ...s, editingProfile: false, showPrefs: false })),
     }),
     [state],

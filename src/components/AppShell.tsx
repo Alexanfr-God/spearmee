@@ -16,6 +16,7 @@ import { MatchesScreen } from "@/components/matches/MatchesScreen";
 import { ChatScreen } from "@/components/matches/ChatScreen";
 import { BlogScreen } from "@/components/blog/BlogScreen";
 import { RewardsScreen } from "@/components/rewards/RewardsScreen";
+import { SpearmeeRun } from "@/components/game/SpearmeeRun";
 import { ProfileScreen } from "@/components/profile/ProfileScreen";
 import { PreferencesScreen } from "@/components/profile/PreferencesScreen";
 
@@ -63,6 +64,9 @@ function AuthError() {
 function MainApp() {
   const nav = useNav();
 
+  if (nav.playingGame) {
+    return <SpearmeeRun onExit={nav.closeGame} />;
+  }
   if (nav.chatMatchId) {
     return <ChatScreen matchId={nav.chatMatchId} onBack={nav.closeChat} />;
   }
