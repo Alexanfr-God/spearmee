@@ -66,7 +66,11 @@
     "over": "게임 오버",
     "reached": "레벨 {{level}} 도달",
     "again": "다시 하기",
-    "exit": "나가기"
+    "exit": "나가기",
+    "best": "최고",
+    "capReached": "오늘 한도 도달",
+    "leaderboard": "리더보드",
+    "notRanked": "이번 주 순위에 들려면 더 플레이하세요"
   },
   "perks": {
     "extra_picks": { "title": "추천 5명 더 받기", "desc": "최고의 매칭 새 묶음" },
@@ -79,6 +83,7 @@
   "quests": {
     "daily_resonate": "오늘 5명과 공명하기",
     "daily_message": "오늘 메시지 보내기",
+    "daily_play": "오늘 Spearmee Run 플레이하기",
     "weekly_streak": "3일 연속 유지하기",
     "weekly_match": "이번 주 매치 만들기",
     "once_photos": "사진 3장 추가하기",

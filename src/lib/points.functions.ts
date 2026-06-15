@@ -211,6 +211,7 @@ export interface QuestDef {
 const QUESTS: QuestDef[] = [
   { key: "daily_resonate", type: "daily", points: 15, goal: 5 },
   { key: "daily_message", type: "daily", points: 10, goal: 1 },
+  { key: "daily_play", type: "daily", points: 10, goal: 1 },
   { key: "weekly_streak", type: "weekly", points: 30, goal: 3 },
   { key: "weekly_match", type: "weekly", points: 25, goal: 1 },
   { key: "once_photos", type: "once", points: 20, goal: 3 },
@@ -266,7 +267,7 @@ async function computeQuestStats(
   const dayStart = now.toISOString().slice(0, 10) + "T00:00:00.000Z";
   const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
 
-  const [swipes, messages, photos, matches, prefs] = await Promise.all([
+  const [swipes, messages, photos, matches, prefs, games] = await Promise.all([
     admin
       .from("swipes")
       .select("id", { count: "exact", head: true })
@@ -285,6 +286,12 @@ async function computeQuestStats(
       .or(`user_a.eq.${userId},user_b.eq.${userId}`)
       .gte("created_at", weekAgo),
     admin.from("preferences").select("id", { count: "exact", head: true }).eq("profile_id", userId),
+    admin
+      .from("points_ledger")
+      .select("id", { count: "exact", head: true })
+      .eq("profile_id", userId)
+      .eq("action", "game")
+      .gte("created_at", dayStart),
   ]);
 
   return {
@@ -296,6 +303,7 @@ async function computeQuestStats(
     once_prefs: (prefs.count ?? 0) > 0 ? 1 : 0,
     once_verify: prof?.verified ? 1 : 0,
     once_profile: prof?.onboarded ? 1 : 0,
+    daily_play: (games.count ?? 0) > 0 ? 1 : 0,
   };
 }
 

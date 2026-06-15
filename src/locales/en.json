@@ -66,7 +66,11 @@
     "over": "Game over",
     "reached": "Reached level {{level}}",
     "again": "Play again",
-    "exit": "Exit"
+    "exit": "Exit",
+    "best": "Best",
+    "capReached": "Daily cap reached",
+    "leaderboard": "Leaderboard",
+    "notRanked": "Play more to rank this week"
   },
   "perks": {
     "extra_picks": { "title": "Get 5 more picks", "desc": "A fresh batch of top matches" },
@@ -79,6 +83,7 @@
   "quests": {
     "daily_resonate": "Resonate with 5 people today",
     "daily_message": "Send a message today",
+    "daily_play": "Play Spearmee Run today",
     "weekly_streak": "Keep a 3-day streak",
     "weekly_match": "Make a match this week",
     "once_photos": "Add 3 photos",

@@ -1,9 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 
 import { haptic } from "@/lib/telegram";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  submitGameScore,
+  getLeaderboard,
+  type SubmitScoreResult,
+  type LeaderboardResult,
+} from "@/lib/game.functions";
 
 type Kind = "virus" | "dna" | "speed" | "shield" | "magnet";
 
@@ -85,6 +93,33 @@ export function SpearmeeRun({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const stateRef = useRef<GameState>(freshState());
   const [over, setOver] = useState<{ score: number; level: number } | null>(null);
+  const [result, setResult] = useState<SubmitScoreResult | null>(null);
+  const [board, setBoard] = useState<LeaderboardResult | null>(null);
+  const [boardLoading, setBoardLoading] = useState(false);
+  const callSubmit = useServerFn(submitGameScore);
+  const callBoard = useServerFn(getLeaderboard);
+
+  useEffect(() => {
+    if (!over) return;
+    let cancelled = false;
+    callSubmit({ data: { score: over.score } })
+      .then((r) => {
+        if (!cancelled) setResult(r);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [over, callSubmit]);
+
+  const openBoard = async () => {
+    setBoardLoading(true);
+    try {
+      setBoard(await callBoard());
+    } finally {
+      setBoardLoading(false);
+    }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -389,6 +424,8 @@ export function SpearmeeRun({
     stateRef.current = freshState();
     stateRef.current.w = canvasRef.current?.clientWidth ?? 0;
     stateRef.current.h = canvasRef.current?.clientHeight ?? 0;
+    setResult(null);
+    setBoard(null);
     setOver(null);
   };
 
@@ -405,20 +442,73 @@ export function SpearmeeRun({
 
       {over && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 px-8">
-          <div className="w-full max-w-[320px] rounded-3xl bg-card p-6 text-center shadow-[var(--shadow-card)]">
-            <p className="text-sm font-medium text-muted-foreground">{t("game.over")}</p>
-            <p className="mt-1 text-4xl font-bold tabular-nums text-foreground">{over.score}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("game.reached", { level: over.level })}
-            </p>
-            <div className="mt-5 space-y-2">
-              <Button className="w-full" size="lg" onClick={playAgain}>
-                {t("game.again")}
-              </Button>
-              <Button className="w-full" variant="ghost" onClick={onExit}>
-                {t("game.exit")}
-              </Button>
-            </div>
+          <div className="w-full max-w-[330px] rounded-3xl bg-card p-6 text-center shadow-[var(--shadow-card)]">
+            {board ? (
+              <>
+                <p className="text-sm font-semibold text-foreground">{t("game.leaderboard")}</p>
+                <ul className="mt-3 max-h-64 space-y-1 overflow-y-auto text-left">
+                  {board.top.map((r) => (
+                    <li
+                      key={r.rank}
+                      className={cn(
+                        "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm",
+                        r.isMe
+                          ? "bg-primary/10 font-semibold text-foreground"
+                          : "text-muted-foreground",
+                      )}
+                    >
+                      <span className="w-6 shrink-0 tabular-nums">#{r.rank}</span>
+                      <span className="flex-1 truncate">{r.name}</span>
+                      <span className="shrink-0 tabular-nums">{r.score}</span>
+                    </li>
+                  ))}
+                </ul>
+                {board.myRank == null && (
+                  <p className="mt-2 text-xs text-muted-foreground">{t("game.notRanked")}</p>
+                )}
+                <Button className="mt-4 w-full" variant="ghost" onClick={() => setBoard(null)}>
+                  {t("common.back")}
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-muted-foreground">{t("game.over")}</p>
+                <p className="mt-1 text-4xl font-bold tabular-nums text-foreground">{over.score}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t("game.reached", { level: over.level })}
+                </p>
+                {result && (
+                  <div className="mt-3 flex items-center justify-center gap-4 text-sm">
+                    <span className="font-semibold text-primary">
+                      {result.rpAwarded > 0 ? `+${result.rpAwarded} RP` : t("game.capReached")}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {t("game.best")}: {result.best}
+                    </span>
+                  </div>
+                )}
+                <div className="mt-5 space-y-2">
+                  <Button className="w-full" size="lg" onClick={playAgain}>
+                    {t("game.again")}
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant="secondary"
+                    onClick={openBoard}
+                    disabled={boardLoading}
+                  >
+                    {boardLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      t("game.leaderboard")
+                    )}
+                  </Button>
+                  <Button className="w-full" variant="ghost" onClick={onExit}>
+                    {t("game.exit")}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
