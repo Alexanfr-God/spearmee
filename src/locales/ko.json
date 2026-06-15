@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Spearmee",
-    "tagline": "진지한 관계와 가정을 위한 파트너 찾기",
+    "tagline": "원하는 가정을 함께 만들 파트너 찾기",
     "continue": "계속",
     "next": "다음",
     "back": "뒤로",
@@ -96,6 +96,20 @@
     "next": "다음",
     "finish": "완료하고 시작하기",
     "resume": "다시 오셨네요 — 프로필을 마저 완성해요",
+    "welcome": {
+      "eyebrow": "진짜 목적이 있는 만남",
+      "title": "함께 가정을 꾸릴 사람을 찾으세요",
+      "subtitle": "Spearmee는 진짜를 원하는 사람들을 위한 곳이에요 — 평생의 동반자, 공동 양육자, 함께할 미래. 누구와 공명할지는 당신이 정합니다.",
+      "p1Title": "사진이 아닌 공명",
+      "p1Desc": "가치관, 의도, 원하는 삶으로 매칭 — 외모는 그다음이에요.",
+      "p2Title": "언어 장벽 없이",
+      "p2Desc": "세계 누구에게나 메시지 — 입력하는 대로 번역돼요.",
+      "p3Title": "언젠가의 모습",
+      "p3Desc": "두 사람의 아기를 상상한 재미있는 AI 미리보기. 그냥 재미로요.",
+      "trust": "인증된 프로필 · 사진은 비공개 · 당신을 볼 사람은 당신이 결정해요",
+      "cta": "프로필 만들기",
+      "free": "성장하는 동안 무료 💙"
+    },
     "photos": {
       "title": "사진 추가",
       "hint": "1–6장의 사진을 추가하세요. 첫 사진이 대표 사진입니다.",
@@ -125,6 +139,7 @@
     },
     "intent": {
       "title": "당신의 의향",
+      "note": "솔직하게 답해 주세요 — 이걸로 매칭해요. 어떤 판단도 하지 않아요.",
       "wantsChildren": "아이를 원하시나요?",
       "childrenTimeline": "언제?",
       "hasChildren": "자녀가 있나요?",
@@ -303,23 +318,92 @@
   },
   "options": {
     "gender": { "male": "남성", "female": "여성", "other": "기타" },
-    "eye_color": { "brown": "갈색", "blue": "파란색", "green": "초록색", "hazel": "헤이즐", "gray": "회색", "dark": "짙은색" },
-    "hair_color": { "black": "검은색", "brown": "갈색", "blonde": "금발", "red": "빨간색", "gray": "회색", "other": "기타" },
+    "eye_color": {
+      "brown": "갈색",
+      "blue": "파란색",
+      "green": "초록색",
+      "hazel": "헤이즐",
+      "gray": "회색",
+      "dark": "짙은색"
+    },
+    "hair_color": {
+      "black": "검은색",
+      "brown": "갈색",
+      "blonde": "금발",
+      "red": "빨간색",
+      "gray": "회색",
+      "other": "기타"
+    },
     "hair_type": { "straight": "직모", "wavy": "웨이브", "curly": "곱슬", "coily": "강한 곱슬" },
-    "body_type": { "slim": "슬림", "athletic": "탄탄함", "average": "보통", "curvy": "글래머", "plus": "플러스" },
-    "ethnicity": { "east_asian": "동아시아", "south_asian": "남아시아", "southeast_asian": "동남아시아", "white": "백인", "black": "흑인", "hispanic": "라틴", "middle_eastern": "중동", "mixed": "혼혈", "other": "기타" },
+    "body_type": {
+      "slim": "슬림",
+      "athletic": "탄탄함",
+      "average": "보통",
+      "curvy": "글래머",
+      "plus": "플러스"
+    },
+    "ethnicity": {
+      "east_asian": "동아시아",
+      "south_asian": "남아시아",
+      "southeast_asian": "동남아시아",
+      "white": "백인",
+      "black": "흑인",
+      "hispanic": "라틴",
+      "middle_eastern": "중동",
+      "mixed": "혼혈",
+      "other": "기타"
+    },
     "wants_children": { "yes": "예", "open": "열려 있음", "unsure": "잘 모르겠음", "no": "아니요" },
-    "children_timeline": { "within_1y": "1년 이내", "1_3y": "1–3년", "someday": "언젠가", "undecided": "미정" },
+    "children_timeline": {
+      "within_1y": "1년 이내",
+      "1_3y": "1–3년",
+      "someday": "언젠가",
+      "undecided": "미정"
+    },
     "has_children": { "none": "자녀 없음", "has": "자녀 있음" },
-    "relationship_goal": { "marriage": "결혼", "serious": "진지한 관계", "coparenting": "공동 양육", "open": "열려 있음" },
+    "relationship_goal": {
+      "marriage": "결혼",
+      "serious": "진지한 관계",
+      "coparenting": "공동 양육",
+      "open": "열려 있음"
+    },
     "smoking": { "never": "전혀", "sometimes": "가끔", "regularly": "자주" },
     "drinking": { "never": "전혀", "sometimes": "가끔", "often": "자주" },
-    "religion": { "none": "없음", "christian": "기독교", "muslim": "이슬람", "jewish": "유대교", "hindu": "힌두교", "buddhist": "불교", "spiritual": "영적", "other": "기타" },
-    "diet": { "omnivore": "잡식", "vegetarian": "채식", "vegan": "비건", "halal": "할랄", "kosher": "코셔", "other": "기타" },
+    "religion": {
+      "none": "없음",
+      "christian": "기독교",
+      "muslim": "이슬람",
+      "jewish": "유대교",
+      "hindu": "힌두교",
+      "buddhist": "불교",
+      "spiritual": "영적",
+      "other": "기타"
+    },
+    "diet": {
+      "omnivore": "잡식",
+      "vegetarian": "채식",
+      "vegan": "비건",
+      "halal": "할랄",
+      "kosher": "코셔",
+      "other": "기타"
+    },
     "exercise": { "never": "전혀", "sometimes": "가끔", "often": "자주", "daily": "매일" },
     "wants_marriage": { "yes": "예", "open": "열려 있음", "no": "아니요" },
     "willing_to_relocate": { "yes": "예", "maybe": "아마도", "no": "아니요" },
-    "education": { "high_school": "고등학교", "college": "전문대", "bachelor": "학사", "master": "석사", "phd": "박사", "other": "기타" },
-    "dealbreakers": { "smoking": "비흡연자만", "no_children": "아이를 원해야 함", "wants_children": "아이에 대한 입장", "relationship_goal": "관계 목표", "religion": "종교" }
+    "education": {
+      "high_school": "고등학교",
+      "college": "전문대",
+      "bachelor": "학사",
+      "master": "석사",
+      "phd": "박사",
+      "other": "기타"
+    },
+    "dealbreakers": {
+      "smoking": "비흡연자만",
+      "no_children": "아이를 원해야 함",
+      "wants_children": "아이에 대한 입장",
+      "relationship_goal": "관계 목표",
+      "religion": "종교"
+    }
   }
 }

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Field, OptionGrid } from "@/components/ui/Field";
 import { PhotosStep } from "@/components/onboarding/PhotosStep";
+import { WelcomeStep } from "@/components/onboarding/WelcomeStep";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type Profile } from "@/hooks/useAuth";
@@ -49,6 +50,8 @@ export function RegistrationWizard({
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<Form>(profile ?? {});
+  // Show the positioning intro only on a fresh start; resumers go straight in.
+  const [intro, setIntro] = useState(mode === "onboarding" && !profile?.display_name);
 
   useEffect(() => {
     if (profile) setForm((f) => ({ ...profile, ...f }));
@@ -116,6 +119,17 @@ export function RegistrationWizard({
   };
 
   const age = ageFromBirthDate(form.birth_date);
+
+  if (intro) {
+    return (
+      <WelcomeStep
+        onStart={() => {
+          haptic("light");
+          setIntro(false);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="mx-auto flex min-h-screen max-w-[420px] flex-col">
@@ -255,6 +269,7 @@ export function RegistrationWizard({
 
             {steps[step].key === "intent" && (
               <>
+                <p className="text-xs text-muted-foreground">{t("onboarding.intent.note")}</p>
                 <Field label={t("onboarding.intent.wantsChildren")}>
                   <OptionGrid
                     group="wants_children"

@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Spearmee",
-    "tagline": "Find a partner for a serious relationship & family",
+    "tagline": "Find a partner for the family you want",
     "continue": "Continue",
     "next": "Next",
     "back": "Back",
@@ -96,6 +96,20 @@
     "next": "Next",
     "finish": "Finish & start matching",
     "resume": "Welcome back — let's finish your profile",
+    "welcome": {
+      "eyebrow": "Dating with a real purpose",
+      "title": "Find someone to build a family with",
+      "subtitle": "Spearmee is for people who want something real — a partner, a co-parent, a future together. You decide who resonates with you.",
+      "p1Title": "Resonance, not just photos",
+      "p1Desc": "Matched on values, intentions and the life you want — looks come second.",
+      "p2Title": "No language barrier",
+      "p2Desc": "Message anyone in the world — every chat is translated as you type.",
+      "p3Title": "A glimpse of someday",
+      "p3Desc": "A playful AI peek at the baby you two might have. Just for fun.",
+      "trust": "Verified profiles · your photos stay private · you choose who sees you",
+      "cta": "Create my profile",
+      "free": "Free while we grow 💙"
+    },
     "photos": {
       "title": "Add your photos",
       "hint": "Add 1–6 photos. Your first photo is your main one.",
@@ -125,6 +139,7 @@
     },
     "intent": {
       "title": "Your intentions",
+      "note": "Be honest — this is what we match on. No judgement, ever.",
       "wantsChildren": "Do you want children?",
       "childrenTimeline": "When?",
       "hasChildren": "Do you have children?",
@@ -303,23 +318,92 @@
   },
   "options": {
     "gender": { "male": "Male", "female": "Female", "other": "Other" },
-    "eye_color": { "brown": "Brown", "blue": "Blue", "green": "Green", "hazel": "Hazel", "gray": "Gray", "dark": "Dark" },
-    "hair_color": { "black": "Black", "brown": "Brown", "blonde": "Blonde", "red": "Red", "gray": "Gray", "other": "Other" },
+    "eye_color": {
+      "brown": "Brown",
+      "blue": "Blue",
+      "green": "Green",
+      "hazel": "Hazel",
+      "gray": "Gray",
+      "dark": "Dark"
+    },
+    "hair_color": {
+      "black": "Black",
+      "brown": "Brown",
+      "blonde": "Blonde",
+      "red": "Red",
+      "gray": "Gray",
+      "other": "Other"
+    },
     "hair_type": { "straight": "Straight", "wavy": "Wavy", "curly": "Curly", "coily": "Coily" },
-    "body_type": { "slim": "Slim", "athletic": "Athletic", "average": "Average", "curvy": "Curvy", "plus": "Plus" },
-    "ethnicity": { "east_asian": "East Asian", "south_asian": "South Asian", "southeast_asian": "Southeast Asian", "white": "White", "black": "Black", "hispanic": "Hispanic / Latino", "middle_eastern": "Middle Eastern", "mixed": "Mixed", "other": "Other" },
+    "body_type": {
+      "slim": "Slim",
+      "athletic": "Athletic",
+      "average": "Average",
+      "curvy": "Curvy",
+      "plus": "Plus"
+    },
+    "ethnicity": {
+      "east_asian": "East Asian",
+      "south_asian": "South Asian",
+      "southeast_asian": "Southeast Asian",
+      "white": "White",
+      "black": "Black",
+      "hispanic": "Hispanic / Latino",
+      "middle_eastern": "Middle Eastern",
+      "mixed": "Mixed",
+      "other": "Other"
+    },
     "wants_children": { "yes": "Yes", "open": "Open", "unsure": "Not sure", "no": "No" },
-    "children_timeline": { "within_1y": "Within 1 year", "1_3y": "1–3 years", "someday": "Someday", "undecided": "Undecided" },
+    "children_timeline": {
+      "within_1y": "Within 1 year",
+      "1_3y": "1–3 years",
+      "someday": "Someday",
+      "undecided": "Undecided"
+    },
     "has_children": { "none": "No children", "has": "Has children" },
-    "relationship_goal": { "marriage": "Marriage", "serious": "Serious relationship", "coparenting": "Co-parenting", "open": "Open" },
+    "relationship_goal": {
+      "marriage": "Marriage",
+      "serious": "Serious relationship",
+      "coparenting": "Co-parenting",
+      "open": "Open"
+    },
     "smoking": { "never": "Never", "sometimes": "Sometimes", "regularly": "Regularly" },
     "drinking": { "never": "Never", "sometimes": "Sometimes", "often": "Often" },
-    "religion": { "none": "None", "christian": "Christian", "muslim": "Muslim", "jewish": "Jewish", "hindu": "Hindu", "buddhist": "Buddhist", "spiritual": "Spiritual", "other": "Other" },
-    "diet": { "omnivore": "Omnivore", "vegetarian": "Vegetarian", "vegan": "Vegan", "halal": "Halal", "kosher": "Kosher", "other": "Other" },
+    "religion": {
+      "none": "None",
+      "christian": "Christian",
+      "muslim": "Muslim",
+      "jewish": "Jewish",
+      "hindu": "Hindu",
+      "buddhist": "Buddhist",
+      "spiritual": "Spiritual",
+      "other": "Other"
+    },
+    "diet": {
+      "omnivore": "Omnivore",
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "halal": "Halal",
+      "kosher": "Kosher",
+      "other": "Other"
+    },
     "exercise": { "never": "Never", "sometimes": "Sometimes", "often": "Often", "daily": "Daily" },
     "wants_marriage": { "yes": "Yes", "open": "Open", "no": "No" },
     "willing_to_relocate": { "yes": "Yes", "maybe": "Maybe", "no": "No" },
-    "education": { "high_school": "High school", "college": "College", "bachelor": "Bachelor's", "master": "Master's", "phd": "PhD", "other": "Other" },
-    "dealbreakers": { "smoking": "No smokers", "no_children": "Must want children", "wants_children": "Children stance", "relationship_goal": "Relationship goal", "religion": "Religion" }
+    "education": {
+      "high_school": "High school",
+      "college": "College",
+      "bachelor": "Bachelor's",
+      "master": "Master's",
+      "phd": "PhD",
+      "other": "Other"
+    },
+    "dealbreakers": {
+      "smoking": "No smokers",
+      "no_children": "Must want children",
+      "wants_children": "Children stance",
+      "relationship_goal": "Relationship goal",
+      "religion": "Religion"
+    }
   }
 }
