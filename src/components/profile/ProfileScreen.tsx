@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -12,6 +14,7 @@ import { VerifiedBadge } from "@/components/points/VerifiedBadge";
 import { VerifyDialog } from "@/components/points/VerifyDialog";
 import { profileCompletePercent } from "@/lib/profile-complete";
 import { logPremiumIntent } from "@/lib/helpers";
+import { devResetAndSeed } from "@/lib/dev.functions";
 import { ageFromBirthDate } from "@/lib/calc";
 import { setLanguage, SUPPORTED_LANGS, LANG_LABELS, type SupportedLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,6 +52,9 @@ export function ProfileScreen() {
   const [socialX, setSocialX] = useState(socials.social_x ?? "");
   const [socialIg, setSocialIg] = useState(socials.social_instagram ?? "");
   const [savingSocial, setSavingSocial] = useState(false);
+  const callDevSeed = useServerFn(devResetAndSeed);
+  const queryClient = useQueryClient();
+  const [seeding, setSeeding] = useState(false);
 
   if (!profile) return null;
 
@@ -75,6 +81,24 @@ export function ProfileScreen() {
     await refreshProfile();
     toast.success(t("common.saved"));
     setSavingSocial(false);
+  }
+
+  // DEV ONLY — reseed my discovery/matches so the demo is testable.
+  async function devReset() {
+    setSeeding(true);
+    haptic("medium");
+    try {
+      const r = await callDevSeed();
+      toast.success(
+        `Seeded — female: ${r.femaleTotal}, with photos: ${r.femaleWithPhotos}, matches: ${r.matchesCreated}`,
+      );
+      await queryClient.invalidateQueries({ queryKey: ["dailySet"] });
+      nav.setTab("discover");
+    } catch {
+      toast.error("Dev seed failed");
+    } finally {
+      setSeeding(false);
+    }
   }
 
   return (
@@ -231,6 +255,18 @@ export function ProfileScreen() {
         }}
       >
         {t("profile.premium")}
+      </motion.button>
+
+      {/* DEV ONLY — reseed discovery/matches for testing. TODO: gate or remove before launch. */}
+      <motion.button
+        variants={item}
+        type="button"
+        whileTap={{ scale: 0.98 }}
+        onClick={devReset}
+        disabled={seeding}
+        className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-4 py-3 text-sm font-medium text-muted-foreground active:bg-accent"
+      >
+        {seeding ? <Loader2 className="h-4 w-4 animate-spin" /> : "🔧 DEV: Reset & seed demo"}
       </motion.button>
 
       {showVerify && <VerifyDialog onClose={() => setShowVerify(false)} />}
