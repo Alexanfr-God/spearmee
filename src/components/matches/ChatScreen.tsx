@@ -302,7 +302,13 @@ export function ChatScreen({ matchId, onBack }: { matchId: string; onBack: () =>
         </motion.button>
       </div>
 
-      {showBaby && <AiBabyDialog matchId={matchId} onClose={() => setShowBaby(false)} />}
+      {showBaby && (
+        <AiBabyDialog
+          matchId={matchId}
+          partnerName={otherName ?? undefined}
+          onClose={() => setShowBaby(false)}
+        />
+      )}
     </div>
   );
 }

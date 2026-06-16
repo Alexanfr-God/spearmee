@@ -22,7 +22,10 @@ const BABY_PROMPT =
 
 export type AiBabyReason = "need_photos" | "rate_limit" | "no_credits" | "unavailable" | "error";
 
-type AiBabyResult = { ok: true; image_url: string | null } | { ok: false; reason: AiBabyReason };
+type AiBabyResult =
+  | { ok: true; image_url: string | null }
+  | { ok: false; reason: Exclude<AiBabyReason, "need_photos"> }
+  | { ok: false; reason: "need_photos"; youMissing: boolean; themMissing: boolean };
 
 /**
  * AI Baby "fun preview" — real generation via the Lovable AI gateway
@@ -74,7 +77,15 @@ export const generateAiBaby = createServerFn({ method: "POST" })
     const pathA = firstFor(match.user_a);
     const pathB = firstFor(match.user_b);
     if (!pathA || !pathB) {
-      return { ok: false, reason: "need_photos" };
+      // Tell the client which side is missing a photo so the UI can guide the
+      // current user to add their own (vs. waiting on the other person).
+      const youAreA = userId === match.user_a;
+      return {
+        ok: false,
+        reason: "need_photos",
+        youMissing: youAreA ? !pathA : !pathB,
+        themMissing: youAreA ? !pathB : !pathA,
+      };
     }
 
     const apiKey = process.env.LOVABLE_API_KEY;

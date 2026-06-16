@@ -237,7 +237,10 @@
   "aiBaby": {
     "title": "Your AI baby preview",
     "generating": "Generating your fun preview…",
-    "needPhotos": "Both of you need at least one photo to use this.",
+    "needPhotos": "You both need at least one photo first.",
+    "needYourPhoto": "Add a photo to unlock your AI baby preview.",
+    "needTheirPhoto": "Once {{name}} adds a photo, you can preview your AI baby together.",
+    "addPhotoCta": "Add a photo",
     "disclaimer": "This is an AI-generated fun preview, not a real or scientific prediction of any actual child. Only face photos are used — appearance details you entered are never used as genetic input.",
     "generate": "Generate preview",
     "again": "Generate again",

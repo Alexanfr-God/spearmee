@@ -2,32 +2,49 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
-import { Loader2, X, Sparkles } from "lucide-react";
+import { Loader2, X, Sparkles, ImagePlus } from "lucide-react";
 
 import { generateAiBaby, type AiBabyReason } from "@/lib/ai-baby.functions";
+import { useNav } from "@/components/nav";
+import { haptic } from "@/lib/telegram";
 import { Button } from "@/components/ui/button";
 
-const ERROR_KEY: Record<AiBabyReason, string> = {
-  need_photos: "aiBaby.needPhotos",
+// Plain failure reasons (need_photos is handled separately with a guided panel).
+const ERROR_KEY: Record<Exclude<AiBabyReason, "need_photos">, string> = {
   rate_limit: "aiBaby.rateLimit",
   no_credits: "aiBaby.noCredits",
   unavailable: "aiBaby.unavailable",
   error: "aiBaby.error",
 };
 
-export function AiBabyDialog({ matchId, onClose }: { matchId: string; onClose: () => void }) {
+export function AiBabyDialog({
+  matchId,
+  partnerName,
+  onClose,
+}: {
+  matchId: string;
+  partnerName?: string;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
+  const nav = useNav();
   const callBaby = useServerFn(generateAiBaby);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [error, setError] = useState<AiBabyReason | null>(null);
+  const [error, setError] = useState<Exclude<AiBabyReason, "need_photos"> | null>(null);
+  const [needInfo, setNeedInfo] = useState<{ youMissing: boolean; themMissing: boolean } | null>(
+    null,
+  );
 
   const generate = async () => {
     setLoading(true);
     setError(null);
+    setNeedInfo(null);
     try {
       const res = await callBaby({ data: { match_id: matchId } });
       if (res.ok) setImageUrl(res.image_url);
+      else if (res.reason === "need_photos")
+        setNeedInfo({ youMissing: res.youMissing, themMissing: res.themMissing });
       else setError(res.reason);
     } catch {
       setError("error");
@@ -35,6 +52,27 @@ export function AiBabyDialog({ matchId, onClose }: { matchId: string; onClose: (
       setLoading(false);
     }
   };
+
+  // Send the user to the photos step so they can add a photo, then come back.
+  // Chat is rendered ahead of the edit wizard, so close it first or the wizard
+  // won't surface.
+  const addPhoto = () => {
+    haptic("light");
+    onClose();
+    nav.closeChat();
+    nav.openEditProfile();
+  };
+
+  // Which guidance line to show when a photo is missing.
+  const needMessage = needInfo
+    ? needInfo.youMissing
+      ? needInfo.themMissing
+        ? t("aiBaby.needPhotos")
+        : t("aiBaby.needYourPhoto")
+      : partnerName
+        ? t("aiBaby.needTheirPhoto", { name: partnerName })
+        : t("aiBaby.needPhotos")
+    : null;
 
   return (
     <motion.div
@@ -98,11 +136,33 @@ export function AiBabyDialog({ matchId, onClose }: { matchId: string; onClose: (
             </motion.div>
           )}
         </div>
-        {error && <p className="mt-3 text-sm text-destructive">{t(ERROR_KEY[error])}</p>}
-        <p className="mt-3 text-xs text-muted-foreground">{t("aiBaby.disclaimer")}</p>
-        <Button className="mt-4 w-full" onClick={generate} disabled={loading}>
-          {loading ? t("aiBaby.generating") : imageUrl ? t("aiBaby.again") : t("aiBaby.generate")}
-        </Button>
+
+        {needInfo ? (
+          <p className="mt-3 text-sm text-foreground">{needMessage}</p>
+        ) : error ? (
+          <p className="mt-3 text-sm text-destructive">{t(ERROR_KEY[error])}</p>
+        ) : null}
+
+        {!needInfo && (
+          <p className="mt-3 text-xs text-muted-foreground">{t("aiBaby.disclaimer")}</p>
+        )}
+
+        {needInfo ? (
+          needInfo.youMissing ? (
+            <Button className="mt-4 w-full" onClick={addPhoto}>
+              <ImagePlus className="mr-1.5 h-4 w-4" />
+              {t("aiBaby.addPhotoCta")}
+            </Button>
+          ) : (
+            <Button variant="secondary" className="mt-4 w-full" onClick={onClose}>
+              {t("common.close")}
+            </Button>
+          )
+        ) : (
+          <Button className="mt-4 w-full" onClick={generate} disabled={loading}>
+            {loading ? t("aiBaby.generating") : imageUrl ? t("aiBaby.again") : t("aiBaby.generate")}
+          </Button>
+        )}
       </motion.div>
     </motion.div>
   );
