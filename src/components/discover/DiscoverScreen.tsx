@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "motion/react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -38,38 +38,49 @@ export function DiscoverScreen() {
   const candidates = useMemo(() => data?.candidates ?? [], [data]);
   const current = candidates[index];
 
+  const deciding = useRef<string | null>(null);
+
   const act = async (action: "like" | "pass" | "superlike") => {
-    if (!current || !profile) return;
+    const c = current;
+    if (!c || !profile) return;
+    // Ignore a repeat decision on the same card (double-tap, or tap + drag).
+    if (deciding.current === c.id) return;
+    deciding.current = c.id;
+
     haptic(action === "pass" ? "light" : "medium");
-
-    await supabase.from("swipes").insert({
-      swiper_id: profile.id,
-      target_id: current.id,
-      action,
-    });
-
-    if (action === "superlike") {
-      await logPremiumIntent(profile.id, "spark", { target_id: current.id });
-      toast.success(t("resonance.sparkSent"));
-    }
-
-    if (action !== "pass") {
-      const { data: m } = await supabase
-        .from("matches")
-        .select("id, user_a, user_b")
-        .or(
-          `and(user_a.eq.${profile.id},user_b.eq.${current.id}),and(user_a.eq.${current.id},user_b.eq.${profile.id})`,
-        )
-        .maybeSingle();
-      if (m) {
-        haptic("success");
-        void award("got_match");
-        setMatch(current);
-        setIndex((i) => i + 1);
-        return;
-      }
-    }
+    // Advance the UI immediately and record the swipe in the background, so a
+    // tap feels instant and a slow round-trip can't drop or double-count a card.
     setIndex((i) => i + 1);
+
+    try {
+      await supabase.from("swipes").insert({
+        swiper_id: profile.id,
+        target_id: c.id,
+        action,
+      });
+
+      if (action === "superlike") {
+        await logPremiumIntent(profile.id, "spark", { target_id: c.id });
+        toast.success(t("resonance.sparkSent"));
+      }
+
+      if (action !== "pass") {
+        const { data: m } = await supabase
+          .from("matches")
+          .select("id, user_a, user_b")
+          .or(
+            `and(user_a.eq.${profile.id},user_b.eq.${c.id}),and(user_a.eq.${c.id},user_b.eq.${profile.id})`,
+          )
+          .maybeSingle();
+        if (m) {
+          haptic("success");
+          void award("got_match");
+          setMatch(c);
+        }
+      }
+    } catch {
+      // Optimistic UI already advanced; swallow transient write errors.
+    }
   };
 
   if (isLoading) {

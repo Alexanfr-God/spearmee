@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import type { DailyCandidate } from "@/lib/daily.functions";
 import { haptic } from "@/lib/telegram";
@@ -14,7 +14,6 @@ export function ResonanceCard({
   photoUrl?: string;
 }) {
   const { t } = useTranslation();
-  const [revealed, setRevealed] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
 
   return (
@@ -24,8 +23,7 @@ export function ResonanceCard({
           <img
             src={photoUrl}
             alt={candidate.display_name ?? ""}
-            className="h-full w-full object-cover transition-[filter] duration-300"
-            style={{ filter: revealed ? "none" : "blur(22px)" }}
+            className="h-full w-full object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-5xl">🌿</div>
@@ -36,20 +34,6 @@ export function ResonanceCard({
           {candidate.score}
           {t("resonance.match")} · {t("resonance.scoreLabel")}
         </div>
-
-        {photoUrl && (
-          <button
-            type="button"
-            onClick={() => {
-              haptic("selection");
-              setRevealed((r) => !r);
-            }}
-            className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-medium text-white"
-          >
-            {revealed ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-            {revealed ? t("resonance.hidePhoto") : t("resonance.revealPhoto")}
-          </button>
-        )}
 
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 p-4 pt-12"
@@ -68,7 +52,9 @@ export function ResonanceCard({
 
       <div className="flex flex-wrap gap-2 p-4">
         {candidate.signals.length === 0 && (
-          <span className="text-sm text-muted-foreground">{t("resonance.scoreLabel")}: {candidate.score}%</span>
+          <span className="text-sm text-muted-foreground">
+            {t("resonance.scoreLabel")}: {candidate.score}%
+          </span>
         )}
         {candidate.signals.map((s) => (
           <span
